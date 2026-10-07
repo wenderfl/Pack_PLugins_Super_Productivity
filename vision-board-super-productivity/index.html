@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+  <style>:root{--bg:#101010;--text:#ffffff;--text-muted:#888888;--accent:#1ed760;--accent-cyan:#38bdf8;--selection:#6965db;--danger:#ef4444;--font-sans:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--font-mono:'JetBrains Mono',"Fira Code",monospace,Consolas;--font-hand:'Caveat','Kalam','Comic Neue',cursive,sans-serif}*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;min-width:100vw;min-height:100vh;background-color:var(--bg);color:var(--text);font-family:var(--font-sans);overflow:auto;user-select:none;-webkit-font-smoothing:antialiased}#canvas{position:absolute;top:0;left:0;min-width:5000px;min-height:5000px;width:100%;height:100%;cursor:default;transform-origin:0 0;transition:transform 0.05s ease-out}.canvas-zoom-controls{position:fixed;bottom:20px;left:20px;display:flex;align-items:center;gap:3px;background:rgba(26,26,26,0.92);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:3px 5px;box-shadow:0 8px 24px rgba(0,0,0,0.5);backdrop-filter:blur(12px);z-index:9990;user-select:none}.canvas-zoom-controls .zoom-btn,.canvas-zoom-controls .zoom-level-btn{background:transparent;border:none;color:#d4d4d8;padding:5px 8px;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-family:var(--font-sans);transition:background 0.15s,color 0.15s,transform 0.1s}.canvas-zoom-controls .zoom-btn:hover,.canvas-zoom-controls .zoom-level-btn:hover{background:rgba(255,255,255,0.12);color:#fff}.canvas-zoom-controls .zoom-btn:active,.canvas-zoom-controls .zoom-level-btn:active{transform:scale(0.94)}.canvas-zoom-controls .zoom-level-btn{min-width:48px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.5px}.context-menu{position:fixed;display:none;flex-direction:column;background:rgba(26,26,26,0.95);border:1px solid rgba(255,255,255,0.12);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.6);backdrop-filter:blur(12px);padding:6px;z-index:9999;min-width:150px;animation:menuPop 0.12s ease-out}@keyframes menuPop{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}.menu-item{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:14px;font-weight:500;color:var(--text);background:transparent;border:none;border-radius:6px;cursor:pointer;text-align:left;transition:background 0.15s}.menu-item:hover{background:rgba(255,255,255,0.1);color:#fff}.board-card{position:absolute;background:transparent;border:none;box-shadow:none;z-index:10;user-select:text;cursor:grab;padding:2px;box-sizing:border-box;display:flex;flex-direction:column}.board-card:active{cursor:grabbing}.board-card.dragging{opacity:0.8;z-index:999}.smart-guide{position:absolute;pointer-events:none;z-index:99998;display:none}.smart-guide.vertical{width:1px;background:#ff2a85;box-shadow:0 0 5px rgba(255,42,133,0.85)}.smart-guide.horizontal{height:1px;background:#ff2a85;box-shadow:0 0 5px rgba(255,42,133,0.85)}.selection-box{display:none;position:absolute;inset:-4px;border:1.5px solid var(--selection);pointer-events:none;z-index:100;border-radius:4px}.board-card.selected .selection-box{display:block}.board-card[data-type="markdown"] .selection-box{inset:-8px;border:1.5px dashed var(--selection);border-radius:8px;background:rgba(105,101,219,0.035);box-shadow:0 0 0 1px rgba(105,101,219,0.15),0 4px 16px rgba(0,0,0,0.25)}.board-card[data-type="markdown"]:not(.bg-transparent) .selection-box{inset:-6px;border:2px solid var(--selection);border-radius:12px;box-shadow:0 0 0 1px rgba(105,101,219,0.3),0 6px 20px rgba(0,0,0,0.3);background:transparent}.resize-handle{position:absolute;width:9px;height:9px;background:#ffffff;border:1.5px solid var(--selection);border-radius:2px;pointer-events:auto;z-index:102;box-shadow:0 1px 4px rgba(0,0,0,0.4);transition:transform 0.12s ease,background-color 0.12s ease}.resize-handle:hover{transform:scale(1.35);background:var(--selection);border-color:#ffffff}.resize-handle.nw{top:-5px;left:-5px;cursor:nwse-resize}.resize-handle.ne{top:-5px;right:-5px;cursor:nesw-resize}.resize-handle.se{bottom:-5px;right:-5px;cursor:nwse-resize}.resize-handle.sw{bottom:-5px;left:-5px;cursor:nesw-resize}.resize-handle.n{top:-5px;left:calc(50% - 4.5px);cursor:ns-resize}.resize-handle.s{bottom:-5px;left:calc(50% - 4.5px);cursor:ns-resize}.resize-handle.w{top:calc(50% - 4.5px);left:-5px;cursor:ew-resize}.resize-handle.e{top:calc(50% - 4.5px);right:-5px;cursor:ew-resize}.btn-close{position:absolute;top:-14px;right:-14px;background:#202025;border:1.5px solid rgba(255,255,255,0.22);color:var(--text-muted);cursor:pointer;font-size:10px;line-height:1;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s,color 0.15s,background 0.15s,transform 0.15s;z-index:106;box-shadow:0 2px 8px rgba(0,0,0,0.6)}.board-card:hover .btn-close,.board-card.selected .btn-close{opacity:1}.btn-close:hover{color:#fff;background:var(--danger);border-color:var(--danger);transform:scale(1.15)}.card-content{padding:0;background:transparent;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden}.img-container{width:100%;height:100%;background:transparent;border:none;display:flex;flex-direction:column;overflow:hidden}.img-container img{width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;pointer-events:none}.countdown-circular-wrapper{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;user-select:none;overflow:hidden}.countdown-title{font-size:14px;font-weight:700;color:#ffffff;outline:none;text-align:center;max-width:100%;word-break:break-word;flex-shrink:0}.circle-dial{position:relative;width:100%;height:100%;flex:1;display:flex;align-items:center;justify-content:center;min-width:60px;min-height:60px;container-type:size}.circle-svg{width:100%;height:100%;max-width:100%;max-height:100%;transform:rotate(-90deg)}.circle-bg{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:4.5}.circle-progress{fill:none;stroke:var(--accent);stroke-width:4.5;stroke-linecap:round;stroke-dasharray:301.6;stroke-dashoffset:0;transition:stroke-dashoffset 0.6s ease,stroke 0.3s}.circle-dial.final-hours .circle-progress{stroke:var(--accent-cyan)}.circle-dial.expired .circle-progress{stroke:rgba(255,255,255,0.2)}.circle-center-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}.circle-num{font-size:26cqmin;font-weight:800;font-family:var(--font-mono);color:#ffffff;line-height:1}.circle-unit{font-size:9cqmin;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-top:2cqmin}.markdown-body{width:100%;height:100%;overflow:auto;background:transparent;outline:none;box-sizing:border-box;transition:background 0.15s,color 0.15s,font-size 0.15s;color:inherit}.markdown-body:empty::before{content:'Clique duas vezes para escrever...';color:rgba(255,255,255,0.35);pointer-events:none;font-style:italic}.markdown-body.editing:empty::before{content:'Digite seu texto aqui...'}.board-card:not(.bg-transparent):not(.bg-dark) .markdown-body:empty::before{color:rgba(0,0,0,0.35)}.markdown-body,.font-hand,span.font-hand,.font-sans,span.font-sans,.font-mono,span.font-mono{font-family:var(--font-sans) !important;line-height:1.5}.size-s,span.size-s{font-size:13px !important}.size-m,span.size-m{font-size:17px !important}.size-l,span.size-l{font-size:22px !important}.size-xl,span.size-xl{font-size:28px !important}.align-left{text-align:left}.align-center{text-align:center}.align-right{text-align:right}.markdown-body.editing{cursor:text;caret-color:var(--accent);outline:1.5px solid rgba(105,101,219,0.45);border-radius:6px;padding:2px 4px}mark{background:rgba(254,240,138,0.45);color:inherit;padding:1px 4px;border-radius:3px}.board-card.bg-transparent .card-content{background:transparent}.board-card.bg-yellow .card-content{background:#fef08a !important;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,0.25);padding:10px}.board-card.bg-green .card-content{background:#bbf7d0 !important;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,0.25);padding:10px}.board-card.bg-blue .card-content{background:#bae6fd !important;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,0.25);padding:10px}.board-card.bg-pink .card-content{background:#fbcfe8 !important;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,0.25);padding:10px}.board-card.bg-dark .card-content{background:rgba(28,28,30,0.9) !important;border:1px solid rgba(255,255,255,0.12);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.5);padding:10px}.board-card[data-type="line"]{min-width:40px;min-height:20px}.board-card[data-type="line"] .card-content{width:100%;height:100%;overflow:visible;display:flex;align-items:center;justify-content:center}.board-line-svg{width:100%;height:100%;overflow:visible;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.45))}.markdown-body hr.md-hr,.markdown-body hr{border:none;height:1.5px;background:currentColor;opacity:0.25;margin:10px 0;border-radius:1px}.markdown-body h1,.markdown-body h2,.markdown-body h3{font-weight:700;margin:4px 0;color:inherit}.markdown-body h1{font-size:1.4em}.markdown-body h2{font-size:1.25em}.markdown-body h3{font-size:1.1em}.markdown-body p{margin-bottom:6px;color:inherit}.markdown-body strong{font-weight:700}.markdown-body em{font-style:italic}.markdown-body u{text-decoration:underline}.markdown-body s{text-decoration:line-through;opacity:0.7}.markdown-body mark{border-radius:3px;padding:1px 4px}.markdown-body blockquote{border-left:3px solid currentColor;padding-left:8px;opacity:0.8;margin:6px 0}.markdown-body code{background:rgba(255,255,255,0.12);padding:2px 5px;border-radius:4px;font-family:var(--font-mono);font-size:0.85em}.markdown-task{list-style:none;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;cursor:pointer}.markdown-task input[type="checkbox"]{cursor:pointer;margin-top:4px;accent-color:var(--accent)}.markdown-task.checked span{text-decoration:line-through;opacity:0.6}.markdown-editor{display:none;width:100%;height:100%;min-height:80px;background:rgba(18,18,20,0.95);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:8px;resize:none;outline:none;box-sizing:border-box;box-shadow:0 4px 16px rgba(0,0,0,0.5)}.excalidraw-text-toolbar{position:absolute;top:-46px;left:50%;transform:translateX(-50%);background:#18181b;border:1px solid rgba(255,255,255,0.16);border-radius:8px;padding:4px 8px;display:none;align-items:center;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,0.65);z-index:1000;white-space:nowrap;user-select:none;pointer-events:auto}.board-card.selected .excalidraw-text-toolbar,.board-card.selected .excalidraw-line-toolbar{display:flex}body.multi-selection .excalidraw-text-toolbar,body.multi-selection .excalidraw-line-toolbar{display:none !important}.excalidraw-line-toolbar{position:absolute;top:-46px;left:50%;transform:translateX(-50%);background:#18181b;border:1px solid rgba(255,255,255,0.16);border-radius:8px;padding:4px 8px;display:none;align-items:center;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,0.65);z-index:1000;white-space:nowrap;user-select:none;pointer-events:auto}.toolbar-group{display:flex;align-items:center;gap:3px}.tb-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:5px;padding:3px 6px;font-size:11px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.15s;line-height:normal;display:inline-flex;align-items:center;justify-content:center;min-width:22px;min-height:22px;box-sizing:border-box}.tb-btn:hover{background:rgba(255,255,255,0.15);color:#fff}.tb-btn.active{background:var(--selection) !important;border-color:var(--selection) !important;color:#fff !important}.tb-sep{width:1px;height:18px;background:rgba(255,255,255,0.15);margin:0 2px}.font-size-combobox{display:inline-flex;align-items:center;position:relative;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:5px;height:24px;padding:0 2px 0 4px;transition:border-color 0.15s,background 0.15s}.font-size-combobox:hover,.font-size-combobox:focus-within{background:rgba(255,255,255,0.14);border-color:var(--selection)}.tb-fs-input{width:32px;background:transparent;border:none;outline:none;color:#ffffff;font-family:var(--font-mono);font-size:11px;font-weight:600;text-align:center;padding:0;-moz-appearance:textfield}.tb-fs-input::-webkit-outer-spin-button,.tb-fs-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.tb-fs-dropdown-btn{position:relative;display:flex;align-items:center;justify-content:center;width:16px;height:20px;cursor:pointer;color:var(--text-muted);border-radius:3px;transition:color 0.15s,background 0.15s}.tb-fs-dropdown-btn:hover{color:#ffffff;background:rgba(255,255,255,0.12)}.tb-fs-select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;background:#18181b;color:#ffffff}.tb-fs-select option{background:#18181b;color:#ffffff;padding:4px}.tb-color-dot{width:14px;height:14px;border-radius:50%;cursor:pointer;border:1.5px solid transparent;transition:transform 0.15s,border-color 0.15s;flex-shrink:0}.tb-color-dot:hover{transform:scale(1.2)}.tb-color-dot.active{border-color:#fff !important;transform:scale(1.15)}.tb-bg-pill{width:14px;height:14px;border-radius:3px;border:1px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:8px;transition:transform 0.15s;padding:0}.tb-bg-pill:hover{transform:scale(1.2)}.tb-bg-pill.active{border-color:var(--accent) !important;transform:scale(1.15);box-shadow:0 0 0 1px var(--accent)}.simple-dialog-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:10000;display:none;align-items:center;justify-content:center}.simple-dialog{background:#1c1c1c;border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:20px;width:350px;max-width:92vw;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,0.7)}.simple-dialog input{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px 10px;color:#fff;font-size:13px;outline:none;width:100%;min-width:0;box-sizing:border-box}.simple-dialog button#cdConfirmBtn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;width:100%;box-sizing:border-box;transition:filter 0.15s,transform 0.1s}.simple-dialog button#cdConfirmBtn:hover{filter:brightness(1.1)}.simple-dialog button#cdConfirmBtn:active{transform:scale(0.99)}.color-swatches{display:flex;gap:6px;align-items:center}.color-swatch-dot{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform 0.15s,border-color 0.15s;flex-shrink:0}.color-swatch-dot:hover{transform:scale(1.15)}.color-swatch-dot.active{border-color:#ffffff;transform:scale(1.1)}.simple-dialog input.color-picker-btn{width:22px !important;height:22px !important;min-width:22px !important;max-width:22px !important;padding:0 !important;border-radius:50% !important;border:1.5px solid rgba(255,255,255,0.3) !important;background:transparent !important;cursor:pointer;flex-shrink:0;-webkit-appearance:none;appearance:none;outline:none;box-shadow:none !important}.color-picker-btn::-webkit-color-swatch-wrapper{padding:0}.color-picker-btn::-webkit-color-swatch{border:none;border-radius:50%}.color-picker-btn::-moz-color-swatch{border:none;border-radius:50%}.date-preset-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.date-preset-chips::-webkit-scrollbar{display:none}.simple-dialog button.preset-chip{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:12px;padding:4px 10px;font-size:11px;font-weight:500;color:var(--text-muted);cursor:pointer;white-space:nowrap;transition:all 0.15s ease;width:auto !important;line-height:normal}.simple-dialog button.preset-chip:hover{background:rgba(255,255,255,0.16);color:#fff;border-color:rgba(255,255,255,0.3)}.simple-dialog button.preset-chip.active{background:var(--accent) !important;color:#000 !important;font-weight:700;border-color:var(--accent) !important}.segmented-date-wrapper{display:flex;align-items:center;background:#111;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:0 6px;position:relative;width:100%;height:35px;box-sizing:border-box;transition:border-color 0.15s,box-shadow 0.15s}.segmented-date-wrapper:focus-within{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.segmented-date-wrapper input.date-segment{background:transparent !important;border:none !important;outline:none !important;color:#fff !important;font-size:13px !important;font-family:var(--font-mono) !important;text-align:center !important;padding:0 1px !important;margin:0 !important;width:26px !important;min-width:0 !important;height:100% !important;flex-shrink:0;box-sizing:border-box;box-shadow:none !important}.segmented-date-wrapper input.date-segment-year{width:44px !important}.segmented-date-wrapper input.date-segment:focus{background:rgba(255,255,255,0.12) !important;border-radius:3px}.segmented-date-wrapper .date-sep{color:var(--text-muted);font-weight:700;font-size:13px;user-select:none;padding:0 1px}.segmented-date-wrapper .calendar-picker-btn{margin-left:auto;background:transparent;border:none;cursor:pointer;padding:2px 4px;font-size:14px;color:var(--text-muted);display:flex;align-items:center;justify-content:center;transition:transform 0.15s}.segmented-date-wrapper .calendar-picker-btn:hover{transform:scale(1.15)}#cdDateFeedback{font-size:11px;font-weight:600;color:var(--accent);min-height:15px;line-height:1.3;transition:color 0.2s}</style>
+</head>
+<body>
+
+  
+  <div id="canvas"></div>
+
+  
+  <div class="context-menu" id="addMenu">
+    <button class="menu-item" id="itemAddImage">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+      <span>Imagem</span>
+    </button>
+    <button class="menu-item" id="itemAddCountdown">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Countdown</span>
+    </button>
+    <button class="menu-item" id="itemAddMarkdown">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+      <span>Texto</span>
+    </button>
+    <button class="menu-item" id="itemAddLine">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="19" y2="5"/><path d="m13 5 6 0 0 6"/></svg>
+      <span>Linha</span>
+    </button>
+  </div>
+ 
+  
+  <div class="canvas-zoom-controls">
+    <button class="zoom-btn" id="btnZoomOut" title="Reduzir Zoom (Alt + Scroll para baixo)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <button class="zoom-level-btn" id="btnZoomReset" title="Redefinir Zoom para 100%">
+      <span id="zoomDisplay">100%</span>
+    </button>
+    <button class="zoom-btn" id="btnZoomIn" title="Aumentar Zoom (Alt + Scroll para cima)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+
+  
+  <input type="file" id="filePicker" accept="image/*" style="display: none;">
+
+  
+  <div class="simple-dialog-backdrop" id="countdownDialog">
+    <div class="simple-dialog">
+      <div style="font-weight: 700; font-size: 15px;" id="cdDialogHeading">Novo Countdown</div>
+      <input type="text" id="cdTitleInput" placeholder="Título (ex: Prova, Meta, Férias)">
+      
+      
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label style="font-size: 11px; color: var(--text-muted);">Atalhos rápidos:</label>
+        <div class="date-preset-chips">
+          <button type="button" class="preset-chip" onclick="applyDatePreset('today')">Hoje</button>
+          <button type="button" class="preset-chip" onclick="applyDatePreset('tomorrow')">Amanhã</button>
+          <button type="button" class="preset-chip" onclick="applyDatePreset('7days')">+7 dias</button>
+          <button type="button" class="preset-chip" onclick="applyDatePreset('30days')">+30 dias</button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 10px; width: 100%; box-sizing: border-box;">
+        <div style="display: flex; flex-direction: column; min-width: 0;">
+          <label style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Data (dia/mês/ano)</label>
+          <div class="segmented-date-wrapper">
+            <input type="text" id="cdDayInput" placeholder="DD" maxlength="2" inputmode="numeric" class="date-segment" title="Dia">
+            <span class="date-sep">/</span>
+            <input type="text" id="cdMonthInput" placeholder="MM" maxlength="2" inputmode="numeric" class="date-segment" title="Mês">
+            <span class="date-sep">/</span>
+            <input type="text" id="cdYearInput" placeholder="AAAA" maxlength="4" inputmode="numeric" class="date-segment date-segment-year" title="Ano">
+            <button type="button" class="calendar-picker-btn" id="cdCalendarBtn" title="Abrir calendário">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            </button>
+            <input type="date" id="cdHiddenDatePicker" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;">
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; min-width: 0;">
+          <label style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Hora (24h)</label>
+          <input type="text" id="cdTimeInput" placeholder="23:59" maxlength="5" value="23:59" inputmode="numeric" style="text-align: center; font-family: var(--font-mono); font-size: 14px; height: 35px;">
+        </div>
+      </div>
+      
+      
+      <div id="cdDateFeedback"></div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;">
+        <span style="font-size: 12px; color: var(--text-muted);">Cor do círculo:</span>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <div class="color-swatches" id="cdColorSwatches"></div>
+          <input type="color" id="cdCustomColorInput" class="color-picker-btn" value="#1ed760" title="Cor personalizada">
+        </div>
+      </div>
+
+      <button id="cdConfirmBtn">Salvar</button>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    const STORAGE_KEY = 'vision_board_empty_canvas';
+    let cards = [];
+    let spawnCoords = { x: 100, y: 100 };
+    let selectedCards = new Set();
+    let zoomLevel = 1;
+    function getSP() {
+      if (window.superProductivity) return window.superProductivity;
+      if (window.parent && window.parent.superProductivity) return window.parent.superProductivity;
+      return null;
+    }
+    async function persist() {
+      const serialized = JSON.stringify(cards);
+      try { localStorage.setItem(STORAGE_KEY, serialized); } catch (e) {}
+      const sp = getSP();
+      if (sp && typeof sp.persistDataSynced === 'function') {
+        try { await sp.persistDataSynced(serialized, 'broaderGoalsDashboardData'); } catch (e) {}
+      }
+    }
+    function screenToCanvas(clientX, clientY) {
+      const canvasRect = canvas.getBoundingClientRect();
+      return {
+        x: Math.round((clientX - canvasRect.left) / zoomLevel),
+        y: Math.round((clientY - canvasRect.top) / zoomLevel)
+      };
+    }
+    function updateCanvasBounds() {
+      let maxX = 5000;
+      let maxY = 5000;
+      cards.forEach(c => {
+        const r = (c.x || 0) + (c.width || 300) + 1200;
+        const b = (c.y || 0) + (c.height || 200) + 1200;
+        if (r > maxX) maxX = r;
+        if (b > maxY) maxY = b;
+      });
+      canvas.style.minWidth = `${maxX}px`;
+      canvas.style.minHeight = `${maxY}px`;
+    }
+    let isViewRestored = false;
+    let scrollSaveTimer = null;
+    function saveViewPosition() {
+      if (!isViewRestored) return;
+      clearTimeout(scrollSaveTimer);
+      scrollSaveTimer = setTimeout(() => {
+        try {
+          localStorage.setItem('visionBoard_scrollX', Math.round(window.scrollX).toString());
+          localStorage.setItem('visionBoard_scrollY', Math.round(window.scrollY).toString());
+          localStorage.setItem('visionBoard_zoom', zoomLevel.toString());
+        } catch (e) {}
+      }, 80);
+    }
+    window.addEventListener('scroll', saveViewPosition, { passive: true });
+    const saveImmediate = () => {
+      if (!isViewRestored) return;
+      try {
+        localStorage.setItem('visionBoard_scrollX', Math.round(window.scrollX).toString());
+        localStorage.setItem('visionBoard_scrollY', Math.round(window.scrollY).toString());
+        localStorage.setItem('visionBoard_zoom', zoomLevel.toString());
+      } catch (e) {}
+    };
+    window.addEventListener('beforeunload', saveImmediate);
+    window.addEventListener('pagehide', saveImmediate);
+    function setZoom(newZoom, focalX = window.innerWidth / 2, focalY = window.innerHeight / 2) {
+      const oldZoom = zoomLevel;
+      newZoom = Math.min(4.0, Math.max(0.15, Math.round(newZoom * 100) / 100));
+      if (Math.abs(newZoom - oldZoom) < 0.005) return;
+      const canvasRect = canvas.getBoundingClientRect();
+      const canvasX = (focalX - canvasRect.left) / oldZoom;
+      const canvasY = (focalY - canvasRect.top) / oldZoom;
+      zoomLevel = newZoom;
+      canvas.style.transformOrigin = '0 0';
+      canvas.style.transform = `scale(${zoomLevel})`;
+      const zoomDisplay = document.getElementById('zoomDisplay');
+      if (zoomDisplay) {
+        zoomDisplay.textContent = `${Math.round(zoomLevel * 100)}%`;
+      }
+      const targetScrollX = Math.max(0, Math.round(canvasX * zoomLevel - focalX));
+      const targetScrollY = Math.max(0, Math.round(canvasY * zoomLevel - focalY));
+      window.scrollTo(targetScrollX, targetScrollY);
+      try {
+        localStorage.setItem('visionBoard_zoom', zoomLevel.toString());
+        if (isViewRestored) {
+          localStorage.setItem('visionBoard_scrollX', targetScrollX.toString());
+          localStorage.setItem('visionBoard_scrollY', targetScrollY.toString());
+        }
+      } catch (e) {}
+    }
+    async function load() {
+      let loaded = false;
+      const sp = getSP();
+      if (sp && typeof sp.loadSyncedData === 'function') {
+        try {
+          const res = await sp.loadSyncedData('broaderGoalsDashboardData');
+          if (res) {
+            const parsed = JSON.parse(res);
+            if (Array.isArray(parsed)) {
+              cards = parsed;
+              loaded = true;
+            }
+          }
+        } catch (e) {}
+      }
+      if (!loaded) {
+        const local = localStorage.getItem(STORAGE_KEY);
+        if (local) {
+          try {
+            const parsed = JSON.parse(local);
+            if (Array.isArray(parsed)) cards = parsed;
+          } catch (e) {}
+        }
+      }
+      renderCards();
+      try {
+        const savedZoom = parseFloat(localStorage.getItem('visionBoard_zoom'));
+        if (savedZoom && !isNaN(savedZoom) && savedZoom > 0) {
+          zoomLevel = Math.min(4.0, Math.max(0.15, Math.round(savedZoom * 100) / 100));
+        } else {
+          zoomLevel = 1.0;
+        }
+      } catch (e) {
+        zoomLevel = 1.0;
+      }
+      canvas.style.transition = 'none';
+      canvas.style.transformOrigin = '0 0';
+      canvas.style.transform = `scale(${zoomLevel})`;
+      const zoomDisplay = document.getElementById('zoomDisplay');
+      if (zoomDisplay) {
+        zoomDisplay.textContent = `${Math.round(zoomLevel * 100)}%`;
+      }
+      void canvas.offsetHeight;
+      setTimeout(() => {
+        canvas.style.transition = 'transform 0.05s ease-out';
+      }, 100);
+      try {
+        const savedX = parseFloat(localStorage.getItem('visionBoard_scrollX'));
+        const savedY = parseFloat(localStorage.getItem('visionBoard_scrollY'));
+        if (!isNaN(savedX) && !isNaN(savedY)) {
+          const targetX = Math.max(0, Math.round(savedX));
+          const targetY = Math.max(0, Math.round(savedY));
+          window.scrollTo(targetX, targetY);
+          requestAnimationFrame(() => {
+            window.scrollTo(targetX, targetY);
+            setTimeout(() => {
+              window.scrollTo(targetX, targetY);
+              isViewRestored = true;
+            }, 50);
+          });
+        } else {
+          isViewRestored = true;
+        }
+      } catch (e) {
+        isViewRestored = true;
+      }
+    }
+    const canvas = document.getElementById('canvas');
+    const addMenu = document.getElementById('addMenu');
+    const filePicker = document.getElementById('filePicker');
+    const countdownDialog = document.getElementById('countdownDialog');
+    const btnZoomOut = document.getElementById('btnZoomOut');
+    const btnZoomIn = document.getElementById('btnZoomIn');
+    const btnZoomReset = document.getElementById('btnZoomReset');
+    const smartGuideV = document.createElement('div');
+    smartGuideV.className = 'smart-guide vertical';
+    canvas.appendChild(smartGuideV);
+    const smartGuideH = document.createElement('div');
+    smartGuideH.className = 'smart-guide horizontal';
+    canvas.appendChild(smartGuideH);
+    function hideSmartGuides() {
+      smartGuideV.style.display = 'none';
+      smartGuideH.style.display = 'none';
+    }
+    function computeSnapping(primaryCard, primaryEl, rawX, rawY, otherCards) {
+      const SNAP_DISTANCE = 7;
+      const pw = primaryEl ? primaryEl.offsetWidth : (primaryCard.width || 200);
+      const ph = primaryEl ? primaryEl.offsetHeight : (primaryCard.height || 100);
+      const myX = [
+        { type: 'left', val: rawX },
+        { type: 'center', val: rawX + pw / 2 },
+        { type: 'right', val: rawX + pw }
+      ];
+      const myY = [
+        { type: 'top', val: rawY },
+        { type: 'center', val: rawY + ph / 2 },
+        { type: 'bottom', val: rawY + ph }
+      ];
+      let bestSnapX = null;
+      let minDiffX = SNAP_DISTANCE + 1;
+      let bestSnapY = null;
+      let minDiffY = SNAP_DISTANCE + 1;
+      otherCards.forEach(other => {
+        const otherEl = document.getElementById(other.id);
+        const ow = otherEl ? otherEl.offsetWidth : (other.width || 200);
+        const oh = otherEl ? otherEl.offsetHeight : (other.height || 100);
+        const otherX = [
+          other.x,
+          other.x + ow / 2,
+          other.x + ow
+        ];
+        const otherY = [
+          other.y,
+          other.y + oh / 2,
+          other.y + oh
+        ];
+        myX.forEach(my => {
+          otherX.forEach(otVal => {
+            const diff = otVal - my.val;
+            if (Math.abs(diff) <= SNAP_DISTANCE && Math.abs(diff) < minDiffX) {
+              minDiffX = Math.abs(diff);
+              bestSnapX = {
+                guideCoord: otVal,
+                snapDelta: diff
+              };
+            }
+          });
+        });
+        myY.forEach(my => {
+          otherY.forEach(otVal => {
+            const diff = otVal - my.val;
+            if (Math.abs(diff) <= SNAP_DISTANCE && Math.abs(diff) < minDiffY) {
+              minDiffY = Math.abs(diff);
+              bestSnapY = {
+                guideCoord: otVal,
+                snapDelta: diff
+              };
+            }
+          });
+        });
+      });
+      return { bestSnapX, bestSnapY };
+    }
+    if (btnZoomOut) btnZoomOut.onclick = () => setZoom(zoomLevel / 1.15);
+    if (btnZoomIn) btnZoomIn.onclick = () => setZoom(zoomLevel * 1.15);
+    if (btnZoomReset) btnZoomReset.onclick = () => setZoom(1.0);
+    window.addEventListener('wheel', (e) => {
+      if (e.altKey || (e.ctrlKey && !e.shiftKey)) {
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.15 : (1 / 1.15);
+        setZoom(zoomLevel * factor, e.clientX, e.clientY);
+      }
+    }, { passive: false });
+    let isPanning = false;
+    let panStartX = 0, panStartY = 0;
+    let panScrollStartX = 0, panScrollStartY = 0;
+    let isSpacePressed = false;
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) && !document.activeElement.isContentEditable) {
+        if (!isSpacePressed) {
+          isSpacePressed = true;
+          document.body.style.cursor = 'grab';
+        }
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space') {
+        isSpacePressed = false;
+        if (!isPanning) document.body.style.cursor = '';
+      }
+    });
+    window.addEventListener('mousedown', (e) => {
+      if (e.button === 1 || (e.button === 0 && isSpacePressed)) {
+        isPanning = true;
+        panStartX = e.clientX;
+        panStartY = e.clientY;
+        panScrollStartX = window.scrollX;
+        panScrollStartY = window.scrollY;
+        document.body.style.cursor = 'grabbing';
+        e.preventDefault();
+      }
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (isPanning) {
+        const dx = e.clientX - panStartX;
+        const dy = e.clientY - panStartY;
+        window.scrollTo(panScrollStartX - dx, panScrollStartY - dy);
+      }
+    });
+    window.addEventListener('mouseup', (e) => {
+      if (isPanning) {
+        isPanning = false;
+        document.body.style.cursor = isSpacePressed ? 'grab' : '';
+        saveViewPosition();
+      }
+    });
+    window.addEventListener('mousedown', (e) => {
+      if (isSpacePressed || e.button === 1) return;
+      const clickedCard = e.target.closest('.board-card');
+      const isMultiKey = e.ctrlKey || e.metaKey || e.shiftKey;
+      if (clickedCard) {
+        if (isMultiKey) {
+          toggleCardSelection(clickedCard.id);
+        } else {
+          if (!selectedCards.has(clickedCard.id)) {
+            selectCard(clickedCard.id);
+          }
+        }
+        return;
+      }
+      if (e.target.closest('.simple-dialog') || e.target.closest('.context-menu') || e.target.closest('.canvas-zoom-controls')) {
+        return;
+      }
+      if (!isMultiKey) {
+        selectCard(null);
+      }
+      if (e.button === 0 || e.button === 2) {
+        if (e.button === 2) e.preventDefault();
+        spawnCoords = screenToCanvas(e.clientX, e.clientY);
+        addMenu.style.left = `${e.clientX}px`;
+        addMenu.style.top = `${e.clientY}px`;
+        addMenu.style.display = 'flex';
+      }
+    });
+    function selectCard(id) {
+      selectedCards.clear();
+      if (id) {
+        selectedCards.add(id);
+      }
+      updateSelectionUi();
+    }
+    function toggleCardSelection(id) {
+      if (selectedCards.has(id)) {
+        selectedCards.delete(id);
+      } else {
+        selectedCards.add(id);
+      }
+      updateSelectionUi();
+    }
+    function updateSelectionUi() {
+      const isMulti = selectedCards.size > 1;
+      document.body.classList.toggle('multi-selection', isMulti);
+      document.querySelectorAll('.board-card').forEach(el => {
+        if (selectedCards.has(el.id)) {
+          el.classList.add('selected');
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+    }
+    function removeSelectedCards() {
+      if (selectedCards.size === 0) return;
+      cards = cards.filter(c => !selectedCards.has(c.id));
+      selectedCards.clear();
+      persist();
+      renderCards();
+    }
+    window.addEventListener('keydown', (e) => {
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedCards.size > 0) {
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        if (document.activeElement.isContentEditable) return;
+        removeSelectedCards();
+      }
+    });
+    window.addEventListener('contextmenu', (e) => {
+      if (!e.target.closest('.board-card input, .board-card textarea, [contenteditable="true"]')) {
+        e.preventDefault();
+      }
+    });
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('.context-menu')) {
+        addMenu.style.display = 'none';
+      }
+    });
+    document.getElementById('itemAddImage').onclick = () => {
+      addMenu.style.display = 'none';
+      filePicker.click();
+    };
+    filePicker.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        createImageCard(evt.target.result, file.name.replace(/\.[^/.]+$/, ''), spawnCoords.x, spawnCoords.y);
+      };
+      reader.readAsDataURL(file);
+      filePicker.value = '';
+    };
+    function createImageCard(imageUrl, caption, x, y) {
+      const card = {
+        id: 'card_' + Date.now(),
+        type: 'image',
+        x,
+        y,
+        width: 280,
+        height: 220,
+        imageUrl,
+        caption: caption || ''
+      };
+      cards.push(card);
+      persist();
+      renderCards();
+      selectCard(card.id);
+    }
+    const COUNTDOWN_COLORS = ['#1ed760', '#38bdf8', '#a855f7', '#f59e0b', '#f43f5e', '#ffffff'];
+    let selectedCountdownColor = '#1ed760';
+    let editingCountdownId = null;
+    function renderCdColorSwatches() {
+      const container = document.getElementById('cdColorSwatches');
+      if (!container) return;
+      container.innerHTML = '';
+      COUNTDOWN_COLORS.forEach(c => {
+        const dot = document.createElement('div');
+        dot.className = 'color-swatch-dot' + (selectedCountdownColor.toLowerCase() === c.toLowerCase() ? ' active' : '');
+        dot.style.backgroundColor = c;
+        dot.onclick = () => {
+          selectedCountdownColor = c;
+          document.getElementById('cdCustomColorInput').value = c;
+          renderCdColorSwatches();
+        };
+        container.appendChild(dot);
+      });
+    }
+    document.getElementById('cdCustomColorInput').oninput = (e) => {
+      selectedCountdownColor = e.target.value;
+      renderCdColorSwatches();
+    };
+    const cdDayInput = document.getElementById('cdDayInput');
+    const cdMonthInput = document.getElementById('cdMonthInput');
+    const cdYearInput = document.getElementById('cdYearInput');
+    const cdTimeInput = document.getElementById('cdTimeInput');
+    function setFormattedDate(d, m, y) {
+      if (cdDayInput) cdDayInput.value = d ? String(d).padStart(2, '0').slice(-2) : '';
+      if (cdMonthInput) cdMonthInput.value = m ? String(m).padStart(2, '0').slice(-2) : '';
+      if (cdYearInput) cdYearInput.value = y ? String(y).slice(-4) : '';
+      syncPresetChipHighlight();
+      updateDateFeedback();
+    }
+    function getFormattedDate() {
+      const d = cdDayInput ? cdDayInput.value.trim().padStart(2, '0') : '';
+      const m = cdMonthInput ? cdMonthInput.value.trim().padStart(2, '0') : '';
+      const y = cdYearInput ? cdYearInput.value.trim() : '';
+      if (!d || !m || !y || y.length < 4) return null;
+      return `${d}/${m}/${y}`;
+    }
+    function openCountdownDialog(card = null) {
+      if (card) {
+        editingCountdownId = card.id;
+        document.getElementById('cdDialogHeading').textContent = 'Editar Countdown';
+        document.getElementById('cdTitleInput').value = card.title || '';
+        const ts = parseTargetDate(card.targetDate);
+        if (ts) {
+          const dt = new Date(ts);
+          const d = String(dt.getDate()).padStart(2, '0');
+          const m = String(dt.getMonth() + 1).padStart(2, '0');
+          const y = dt.getFullYear();
+          const h = String(dt.getHours()).padStart(2, '0');
+          const min = String(dt.getMinutes()).padStart(2, '0');
+          setFormattedDate(d, m, y);
+          cdTimeInput.value = `${h}:${min}`;
+        } else {
+          setFormattedDate('', '', '');
+          cdTimeInput.value = '23:59';
+        }
+        selectedCountdownColor = card.color || '#1ed760';
+      } else {
+        editingCountdownId = null;
+        document.getElementById('cdDialogHeading').textContent = 'Novo Countdown';
+        document.getElementById('cdTitleInput').value = '';
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        setFormattedDate(d, m, y);
+        cdTimeInput.value = '23:59';
+        selectedCountdownColor = '#1ed760';
+      }
+      document.getElementById('cdCustomColorInput').value = selectedCountdownColor;
+      renderCdColorSwatches();
+      syncPresetChipHighlight();
+      updateDateFeedback();
+      countdownDialog.style.display = 'flex';
+      document.getElementById('cdTitleInput').focus();
+    }
+    window.applyDatePreset = function(type) {
+      const dt = new Date();
+      if (type === 'tomorrow') {
+        dt.setDate(dt.getDate() + 1);
+      } else if (type === '7days') {
+        dt.setDate(dt.getDate() + 7);
+      } else if (type === '30days') {
+        dt.setDate(dt.getDate() + 30);
+      }
+      const d = String(dt.getDate()).padStart(2, '0');
+      const m = String(dt.getMonth() + 1).padStart(2, '0');
+      const y = dt.getFullYear();
+      setFormattedDate(d, m, y);
+      syncPresetChipHighlight(type);
+      updateDateFeedback();
+    };
+    function syncPresetChipHighlight(activeType = null) {
+      const curDate = getFormattedDate();
+      const now = new Date();
+      const formatDate = (dateObj) => {
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const y = dateObj.getFullYear();
+        return `${d}/${m}/${y}`;
+      };
+      const presetMap = {
+        today: formatDate(now),
+        tomorrow: formatDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)),
+        '7days': formatDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7)),
+        '30days': formatDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30))
+      };
+      document.querySelectorAll('.preset-chip').forEach(chip => {
+        const onclickAttr = chip.getAttribute('onclick') || '';
+        let isMatch = false;
+        for (const [key, val] of Object.entries(presetMap)) {
+          if (onclickAttr.includes(`'${key}'`) && curDate === val) {
+            isMatch = true;
+            break;
+          }
+        }
+        chip.classList.toggle('active', isMatch || (activeType && onclickAttr.includes(`'${activeType}'`)));
+      });
+    }
+    const cdCalendarBtn = document.getElementById('cdCalendarBtn');
+    const cdHiddenDatePicker = document.getElementById('cdHiddenDatePicker');
+    if (cdCalendarBtn && cdHiddenDatePicker) {
+      cdCalendarBtn.onclick = () => {
+        const curDate = getFormattedDate();
+        if (curDate) {
+          const [d, m, y] = curDate.split('/');
+          cdHiddenDatePicker.value = `${y}-${m}-${d}`;
+        }
+        if (typeof cdHiddenDatePicker.showPicker === 'function') {
+          try {
+            cdHiddenDatePicker.showPicker();
+          } catch (e) {
+            cdHiddenDatePicker.focus();
+            cdHiddenDatePicker.click();
+          }
+        } else {
+          cdHiddenDatePicker.focus();
+          cdHiddenDatePicker.click();
+        }
+      };
+      cdHiddenDatePicker.onchange = () => {
+        if (cdHiddenDatePicker.value) {
+          const [y, m, d] = cdHiddenDatePicker.value.split('-');
+          setFormattedDate(d, m, y);
+          cdTimeInput.focus();
+          cdTimeInput.select();
+        }
+      };
+    }
+    function updateDateFeedback() {
+      const feedbackEl = document.getElementById('cdDateFeedback');
+      if (!feedbackEl) return;
+      const dateVal = getFormattedDate();
+      const timeVal = cdTimeInput ? cdTimeInput.value.trim() || '23:59' : '23:59';
+      if (!dateVal) {
+        feedbackEl.textContent = 'Digite dia, mês e ano ou use um atalho';
+        feedbackEl.style.color = 'var(--text-muted)';
+        return;
+      }
+      const targetTs = parseTargetDate(`${dateVal} ${timeVal}`);
+      if (!targetTs) {
+        feedbackEl.textContent = 'Data inválida (dia/mês/ano)';
+        feedbackEl.style.color = '#ff6b6b';
+        return;
+      }
+      const now = Date.now();
+      const diffMs = targetTs - now;
+      const targetDateObj = new Date(targetTs);
+      const weekday = targetDateObj.toLocaleDateString('pt-BR', { weekday: 'short' });
+      const dayStr = String(targetDateObj.getDate()).padStart(2, '0');
+      const monthStr = String(targetDateObj.getMonth() + 1).padStart(2, '0');
+      if (diffMs <= 0) {
+        const pastDays = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
+        feedbackEl.textContent = pastDays === 0
+          ? 'Horário no passado (hoje)'
+          : `No passado (${pastDays} ${pastDays === 1 ? 'dia' : 'dias'} atrás)`;
+        feedbackEl.style.color = '#ff9f43';
+        return;
+      }
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      if (diffDays === 0) {
+        feedbackEl.textContent = `Faltam ${diffHours}h (${weekday}, ${dayStr}/${monthStr} às ${timeVal})`;
+        feedbackEl.style.color = selectedCountdownColor || 'var(--accent)';
+      } else if (diffDays === 1) {
+        feedbackEl.textContent = `Falta 1 dia (${weekday}, ${dayStr}/${monthStr} às ${timeVal})`;
+        feedbackEl.style.color = selectedCountdownColor || 'var(--accent)';
+      } else {
+        feedbackEl.textContent = `Faltam ${diffDays} dias (${weekday}, ${dayStr}/${monthStr})`;
+        feedbackEl.style.color = selectedCountdownColor || 'var(--accent)';
+      }
+    }
+    [cdDayInput, cdMonthInput, cdYearInput, cdTimeInput].forEach(inp => {
+      if (!inp) return;
+      inp.addEventListener('focus', () => {
+        setTimeout(() => inp.select(), 10);
+      });
+      inp.addEventListener('click', () => {
+        inp.select();
+      });
+    });
+    cdDayInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 2);
+      e.target.value = v;
+      syncPresetChipHighlight();
+      updateDateFeedback();
+      if (v.length === 2 || (v.length === 1 && parseInt(v, 10) >= 4)) {
+        if (v.length === 1) e.target.value = '0' + v;
+        cdMonthInput.focus();
+        cdMonthInput.select();
+      }
+    });
+    cdDayInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === '/' || (e.key === 'ArrowRight' && cdDayInput.selectionEnd === cdDayInput.value.length)) {
+        e.preventDefault();
+        cdMonthInput.focus();
+        cdMonthInput.select();
+      }
+    });
+    cdMonthInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 2);
+      e.target.value = v;
+      syncPresetChipHighlight();
+      updateDateFeedback();
+      if (v.length === 2 || (v.length === 1 && parseInt(v, 10) >= 2)) {
+        if (v.length === 1) e.target.value = '0' + v;
+        cdYearInput.focus();
+        cdYearInput.select();
+      }
+    });
+    cdMonthInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && cdMonthInput.value === '') {
+        e.preventDefault();
+        cdDayInput.focus();
+        cdDayInput.select();
+      } else if (e.key === 'Enter' || e.key === '/' || (e.key === 'ArrowRight' && cdMonthInput.selectionEnd === cdMonthInput.value.length)) {
+        e.preventDefault();
+        cdYearInput.focus();
+        cdYearInput.select();
+      } else if (e.key === 'ArrowLeft' && cdMonthInput.selectionStart === 0) {
+        e.preventDefault();
+        cdDayInput.focus();
+        cdDayInput.select();
+      }
+    });
+    cdYearInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+      e.target.value = v;
+      syncPresetChipHighlight();
+      updateDateFeedback();
+      if (v.length === 4) {
+        cdTimeInput.focus();
+        cdTimeInput.select();
+      }
+    });
+    cdYearInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && cdYearInput.value === '') {
+        e.preventDefault();
+        cdMonthInput.focus();
+        cdMonthInput.select();
+      } else if (e.key === 'Enter' || (e.key === 'ArrowRight' && cdYearInput.selectionEnd === cdYearInput.value.length)) {
+        e.preventDefault();
+        cdTimeInput.focus();
+        cdTimeInput.select();
+      } else if (e.key === 'ArrowLeft' && cdYearInput.selectionStart === 0) {
+        e.preventDefault();
+        cdMonthInput.focus();
+        cdMonthInput.select();
+      }
+    });
+    [cdDayInput, cdMonthInput, cdYearInput].forEach(inp => {
+      if (!inp) return;
+      inp.addEventListener('paste', (e) => {
+        const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+        const match = text.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+        if (match) {
+          e.preventDefault();
+          setFormattedDate(match[1], match[2], match[3]);
+          cdTimeInput.focus();
+          cdTimeInput.select();
+        }
+      });
+    });
+    cdTimeInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+      if (v.length >= 3) {
+        v = v.slice(0, 2) + ':' + v.slice(2);
+      }
+      e.target.value = v;
+      updateDateFeedback();
+    });
+    cdTimeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && cdTimeInput.value === '') {
+        e.preventDefault();
+        cdYearInput.focus();
+        cdYearInput.select();
+      } else if (e.key === 'ArrowLeft' && cdTimeInput.selectionStart === 0) {
+        e.preventDefault();
+        cdYearInput.focus();
+        cdYearInput.select();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('cdConfirmBtn').click();
+      }
+    });
+    document.getElementById('cdTitleInput').onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        cdDayInput.focus();
+        cdDayInput.select();
+      }
+    };
+    document.getElementById('itemAddCountdown').onclick = () => {
+      addMenu.style.display = 'none';
+      openCountdownDialog(null);
+    };
+    function parseTargetDate(val) {
+  if (!val) return null;
+  const str = String(val).trim();
+  const m = str.match(/^(\d{1,4})[\/\-](\d{1,2})[\/\-](\d{1,4})(?:[\sT](\d{1,2}):(\d{1,2}))?/);
+  if (m) {
+    const isIso = m[1].length === 4;
+    const y = parseInt(isIso ? m[1] : m[3], 10);
+    const mo = parseInt(m[2], 10) - 1;
+    const d = parseInt(isIso ? m[3] : m[1], 10);
+    const h = m[4] !== undefined ? parseInt(m[4], 10) : 23;
+    const min = m[5] !== undefined ? parseInt(m[5], 10) : 59;
+    const dt = new Date(y, mo, d, h, min);
+    return isNaN(dt.getTime()) ? null : dt.getTime();
+  }
+  const ts = new Date(str).getTime();
+  return isNaN(ts) ? null : ts;
+}
+    document.getElementById('cdConfirmBtn').onclick = () => {
+      const title = document.getElementById('cdTitleInput').value.trim() || 'Countdown';
+      let dateVal = getFormattedDate();
+      let timeVal = cdTimeInput.value.trim() || '23:59';
+      if (!dateVal) {
+        const now = new Date();
+        const d = (cdDayInput.value.trim() || String(now.getDate())).padStart(2, '0');
+        const m = (cdMonthInput.value.trim() || String(now.getMonth() + 1)).padStart(2, '0');
+        const y = cdYearInput.value.trim() || String(now.getFullYear());
+        dateVal = `${d}/${m}/${y}`;
+      }
+      const fullDate = `${dateVal} ${timeVal}`;
+      countdownDialog.style.display = 'none';
+      if (editingCountdownId) {
+        const card = cards.find(c => c.id === editingCountdownId);
+        if (card) {
+          card.title = title;
+          card.targetDate = fullDate;
+          card.color = selectedCountdownColor;
+        }
+      } else {
+        const card = {
+          id: 'card_' + Date.now(),
+          type: 'countdown',
+          x: spawnCoords.x,
+          y: spawnCoords.y,
+          width: 140,
+          height: 160,
+          title,
+          targetDate: fullDate,
+          color: selectedCountdownColor
+        };
+        cards.push(card);
+        selectCard(card.id);
+      }
+      persist();
+      renderCards();
+    };
+    countdownDialog.onclick = (e) => {
+      if (e.target === countdownDialog) countdownDialog.style.display = 'none';
+    };
+    document.getElementById('itemAddMarkdown').onclick = () => {
+      addMenu.style.display = 'none';
+      const card = {
+        id: 'card_' + Date.now(),
+        type: 'markdown',
+        x: spawnCoords.x,
+        y: spawnCoords.y,
+        width: 220,
+        height: 100,
+        content: '',
+        fontFamily: 'sans',
+        fontSize: 16,
+        textAlign: 'left',
+        color: '#ffffff',
+        bgStyle: 'transparent'
+      };
+      cards.push(card);
+      persist();
+      renderCards();
+      selectCard(card.id);
+      setTimeout(() => {
+        const viewEl = document.getElementById(`md-view-${card.id}`);
+        if (viewEl) {
+          viewEl.contentEditable = 'true';
+          viewEl.classList.add('editing');
+          viewEl.focus();
+        }
+      }, 50);
+    };
+    document.getElementById('itemAddLine').onclick = () => {
+      addMenu.style.display = 'none';
+      const card = {
+        id: 'card_' + Date.now(),
+        type: 'line',
+        x: spawnCoords.x,
+        y: spawnCoords.y,
+        width: 220,
+        height: 50,
+        color: '#1ed760',
+        strokeWidth: 3,
+        lineStyle: 'solid',
+        arrow: 'end',
+        direction: 'horizontal'
+      };
+      cards.push(card);
+      persist();
+      renderCards();
+      selectCard(card.id);
+    };
+    function renderCards() {
+      document.querySelectorAll('.board-card').forEach(el => el.remove());
+      cards.forEach(card => {
+        const el = document.createElement('div');
+        const bgClass = (card.type === 'markdown' && card.bgStyle) ? ` bg-${card.bgStyle}` : ' bg-transparent';
+        el.className = 'board-card' + (selectedCards.has(card.id) ? ' selected' : '') + bgClass;
+        el.dataset.type = card.type;
+        el.id = card.id;
+        el.style.left = `${card.x}px`;
+        el.style.top = `${card.y}px`;
+        if (card.width) el.style.width = `${card.width}px`;
+        if (card.height) el.style.height = `${card.height}px`;
+        let bodyHtml = '';
+        let toolbarHtml = '';
+        if (card.type === 'image') {
+          bodyHtml = ` <div class="img-container"> <img src="${card.imageUrl}" alt="Imagem"> </div> `;
+        } else if (card.type === 'countdown') {
+          bodyHtml = ` <div class="countdown-circular-wrapper"> <div class="countdown-title" contenteditable="true" data-id="${card.id}">${card.title}</div> <div class="circle-dial" id="dial-${card.id}"> <svg class="circle-svg" viewBox="0 0 110 110"> <circle class="circle-bg" cx="55" cy="55" r="48" /> <circle class="circle-progress" id="c-bar-${card.id}" cx="55" cy="55" r="48" style="stroke: ${card.color || '#1ed760'};" /> </svg> <div class="circle-center-text"> <div class="circle-num" id="c-num-${card.id}">00</div> <div class="circle-unit" id="c-unit-${card.id}">DIAS</div> </div> </div> </div> `;
+        } else if (card.type === 'markdown') {
+          const sizePx = getFontSizePixels(card.fontSize);
+          const align = card.textAlign || 'left';
+          const isLightBg = ['yellow', 'green', 'blue', 'pink'].includes(card.bgStyle);
+          const textColor = card.color || (isLightBg ? '#1f2937' : '#ffffff');
+          const alignClass = `align-${align}`;
+          const fontSizes = [10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64, 72, 96];
+          bodyHtml = ` <div class="markdown-body font-sans ${alignClass}" id="md-view-${card.id}" style="color: ${textColor}; font-size: ${sizePx}px;" spellcheck="false">${parseMd(card.content, card.id)}</div> `;
+          const bg = card.bgStyle || 'transparent';
+          toolbarHtml = ` <div class="excalidraw-text-toolbar" onmousedown="event.stopPropagation(); event.preventDefault();" onclick="event.stopPropagation();"> <div class="toolbar-group font-size-combobox" title="Tamanho da Fonte (digite ou selecione)"> <input type="number" class="tb-fs-input" id="fs-input-${card.id}" value="${sizePx}" min="6" max="250" onmousedown="event.stopPropagation();" onclick="event.stopPropagation();" onchange="updateCardFontSize('${card.id}', this.value)" onkeydown="if(event.key==='Enter'){updateCardFontSize('${card.id}', this.value); this.blur();}" title="Digitar tamanho (px)"> <div class="tb-fs-dropdown-btn" title="Lista de tamanhos"> <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> <select class="tb-fs-select" onmousedown="event.stopPropagation();" onclick="event.stopPropagation();" onchange="updateCardFontSize('${card.id}', this.value);"> ${fontSizes.map(s => `<option value="${s}" ${s === sizePx ? 'selected' : ''}>${s} px</option>`).join('')}
+                    ${!fontSizes.includes(sizePx) ? `<option value="${sizePx}" selected>${sizePx} px (personalizado)</option>` : ''} </select> </div> </div> <div class="tb-sep"></div> <div class="toolbar-group" title="Formatação de Palavra / Texto"> <button type="button" class="tb-btn" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'bold')" title="Negrito"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h9a4 4 0 0 0 0-8H6v8Z"/><path d="M6 12h10a4 4 0 0 1 0 8H6v-8Z"/></svg> </button> <button type="button" class="tb-btn" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'italic')" title="Itálico"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/></svg> </button> <button type="button" class="tb-btn" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'highlight')" title="Marca-texto / Destaque"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11-6 6v3h3l6-6"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg> </button> <button type="button" class="tb-btn" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'strikethrough')" title="Tachado"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4H9a3 3 0 0 0-2.83 4"/><path d="M14 12a4 4 0 0 1 0 8H6"/><line x1="4" x2="20" y1="12" y2="12"/></svg> </button> <button type="button" class="tb-btn" onmousedown="event.preventDefault();" onclick="insertHorizontalRule('${card.id}')" title="Inserir Linha Divisória"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="12" y2="12"/></svg> </button> </div> <div class="tb-sep"></div> <div class="toolbar-group" title="Alinhamento"> <button type="button" class="tb-btn ${align === 'left' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'textAlign', 'left')" title="Alinhar à Esquerda"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="3" y1="6" y2="6"/><line x1="15" x2="3" y1="12" y2="12"/><line x1="17" x2="3" y1="18" y2="18"/></svg> </button> <button type="button" class="tb-btn ${align === 'center' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'textAlign', 'center')" title="Centralizar"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="3" y1="6" y2="6"/><line x1="18" x2="6" y1="12" y2="12"/><line x1="20" x2="4" y1="18" y2="18"/></svg> </button> <button type="button" class="tb-btn ${align === 'right' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'textAlign', 'right')" title="Alinhar à Direita"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="3" y1="6" y2="6"/><line x1="21" x2="9" y1="12" y2="12"/><line x1="21" x2="7" y1="18" y2="18"/></svg> </button> </div> <div class="tb-sep"></div> <div class="toolbar-group" title="Cor do Texto"> ${['#ffffff', '#1f2937', '#ff6b6b', '#ffa94d', '#ffd43b', '#51cf66', '#339af0', '#845ef7'].map(c => `
+                  <div class="tb-color-dot ${textColor === c ? 'active' : ''}" style="background: ${c};" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'color', '${c}')"></div>
+                `).join('')} </div> <div class="tb-sep"></div> <div class="toolbar-group" title="Fundo / Post-it"> <button type="button" class="tb-bg-pill ${bg === 'transparent' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'bgStyle', 'transparent')" title="Transparente (Puro)"> <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" x2="19.07" y1="4.93" y2="19.07"/></svg> </button> <button type="button" class="tb-bg-pill ${bg === 'yellow' ? 'active' : ''}" style="background: #fef08a;" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'bgStyle', 'yellow')" title="Post-it Amarelo"></button> <button type="button" class="tb-bg-pill ${bg === 'green' ? 'active' : ''}" style="background: #bbf7d0;" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'bgStyle', 'green')" title="Post-it Verde"></button> <button type="button" class="tb-bg-pill ${bg === 'blue' ? 'active' : ''}" style="background: #bae6fd;" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'bgStyle', 'blue')" title="Post-it Azul"></button> <button type="button" class="tb-bg-pill ${bg === 'pink' ? 'active' : ''}" style="background: #fbcfe8;" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'bgStyle', 'pink')" title="Post-it Rosa"></button> <button type="button" class="tb-bg-pill ${bg === 'dark' ? 'active' : ''}" style="background: #27272a;" onmousedown="event.preventDefault();" onclick="updateCardTextProp('${card.id}', 'bgStyle', 'dark')" title="Nota Escura"></button> </div> <div class="tb-sep"></div> <button type="button" class="tb-btn tb-delete-btn" onmousedown="event.preventDefault();" onclick="removeCard('${card.id}')" title="Excluir nota"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg> </button> </div> `;
+        } else if (card.type === 'line') {
+          const w = Math.max(20, card.width || 220);
+          const h = Math.max(20, card.height || 50);
+          const dir = card.direction || 'horizontal';
+          const strokeColor = card.color || '#1ed760';
+          const strokeWidth = card.strokeWidth || 3;
+          const lineStyle = card.lineStyle || 'solid';
+          const arrow = card.arrow || 'end';
+          let x1 = 14, y1 = Math.round(h / 2), x2 = w - 14, y2 = Math.round(h / 2);
+          if (dir === 'down') {
+            x1 = 14; y1 = 14; x2 = w - 14; y2 = h - 14;
+          } else if (dir === 'up') {
+            x1 = 14; y1 = h - 14; x2 = w - 14; y2 = 14;
+          } else if (dir === 'vertical') {
+            x1 = Math.round(w / 2); y1 = 14; x2 = Math.round(w / 2); y2 = h - 14;
+          }
+          const dashArray = lineStyle === 'dashed' ? '8 6' : (lineStyle === 'dotted' ? '2 5' : 'none');
+          const markerEnd = (arrow === 'end' || arrow === 'both') ? `url(#arrow-end-${card.id})` : 'none';
+          const markerStart = (arrow === 'start' || arrow === 'both') ? `url(#arrow-start-${card.id})` : 'none';
+          bodyHtml = ` <div class="line-element-wrapper" style="width: 100%; height: 100%; pointer-events: none;"> <svg class="board-line-svg" viewBox="0 0 ${w} ${h}"> <defs> <marker id="arrow-end-${card.id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"> <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="${strokeColor}" /> </marker> <marker id="arrow-start-${card.id}" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"> <path d="M 8 1.5 L 0 5 L 8 8.5 z" fill="${strokeColor}" /> </marker> </defs> <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-dasharray="${dashArray}" stroke-linecap="round" marker-end="${markerEnd}" marker-start="${markerStart}" /> </svg> </div> `;
+          toolbarHtml = ` <div class="excalidraw-line-toolbar" onmousedown="event.stopPropagation(); event.preventDefault();" onclick="event.stopPropagation();"> <div class="toolbar-group" title="Direção da Linha"> <button type="button" class="tb-btn ${dir === 'horizontal' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'direction', 'horizontal')" title="Horizontal"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="12" y2="12"/></svg> </button> <button type="button" class="tb-btn ${dir === 'down' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'direction', 'down')" title="Diagonal Descendo"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" x2="19" y1="5" y2="19"/></svg> </button> <button type="button" class="tb-btn ${dir === 'up' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'direction', 'up')" title="Diagonal Subindo"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" x2="19" y1="19" y2="5"/></svg> </button> <button type="button" class="tb-btn ${dir === 'vertical' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'direction', 'vertical')" title="Vertical"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="3" y2="21"/></svg> </button> </div> <div class="tb-sep"></div> <div class="toolbar-group" title="Estilo de Traço"> <button type="button" class="tb-btn ${lineStyle === 'solid' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'lineStyle', 'solid')" title="Contínua"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" x2="21" y1="12" y2="12"/></svg> </button> <button type="button" class="tb-btn ${lineStyle === 'dashed' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'lineStyle', 'dashed')" title="Tracejada"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 3"><line x1="3" x2="21" y1="12" y2="12"/></svg> </button> <button type="button" class="tb-btn ${lineStyle === 'dotted' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'lineStyle', 'dotted')" title="Pontilhada"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="1 3"><line x1="3" x2="21" y1="12" y2="12"/></svg> </button> </div> <div class="tb-sep"></div> <div class="toolbar-group" title="Pontas e Setas"> <button type="button" class="tb-btn ${arrow === 'none' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'arrow', 'none')" title="Sem Ponta"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" x2="20" y1="12" y2="12"/></svg> </button> <button type="button" class="tb-btn ${arrow === 'end' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'arrow', 'end')" title="Seta no Final"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="19" y1="12" y2="12"/><polyline points="13 6 19 12 13 18"/></svg> </button> <button type="button" class="tb-btn ${arrow === 'both' ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'arrow', 'both')" title="Seta Dupla"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="18" y1="12" y2="12"/><polyline points="9 7 4 12 9 17"/><polyline points="15 7 20 12 15 17"/></svg> </button> </div> <div class="tb-sep"></div> <div class="toolbar-group" title="Espessura"> <button type="button" class="tb-btn ${strokeWidth === 2 ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'strokeWidth', 2)" title="Fina (2px)"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="3" x2="21" y1="12" y2="12"/></svg> </button> <button type="button" class="tb-btn ${strokeWidth === 3.5 || strokeWidth === 3 ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'strokeWidth', 3.5)" title="Média (3.5px)"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="3" x2="21" y1="12" y2="12"/></svg> </button> <button type="button" class="tb-btn ${strokeWidth === 5.5 || strokeWidth === 5 ? 'active' : ''}" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'strokeWidth', 5.5)" title="Grossa (5.5px)"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><line x1="3" x2="21" y1="12" y2="12"/></svg> </button> </div> <div class="tb-sep"></div> <div class="toolbar-group" title="Cor da Linha"> ${['#ffffff', '#1f2937', '#ff6b6b', '#ffa94d', '#ffd43b', '#51cf66', '#339af0', '#845ef7'].map(c => `
+                  <div class="tb-color-dot ${strokeColor === c ? 'active' : ''}" style="background: ${c};" onmousedown="event.preventDefault();" onclick="updateCardLineProp('${card.id}', 'color', '${c}')"></div>
+                `).join('')} </div> <div class="tb-sep"></div> <button type="button" class="tb-btn tb-delete-btn" onmousedown="event.preventDefault();" onclick="removeCard('${card.id}')" title="Excluir linha"> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg> </button> </div> `;
+        }
+        const resizeHandlesHtml = '<div class="selection-box">' + ['nw','n','ne','e','se','s','sw','w'].map(d => '<div class="resize-handle ' + d + '" data-dir="' + d + '"></div>').join('') + '</div>';
+        el.innerHTML = ` ${toolbarHtml} ${resizeHandlesHtml} <button class="btn-close" onclick="removeCard('${card.id}')" title="Remover"> <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg> </button> <div class="card-content"> ${bodyHtml} </div> `;
+        setupDrag(el, card);
+        setupResize(el, card);
+        setupCardEvents(el, card);
+        canvas.appendChild(el);
+        if (card.type === 'countdown') {
+          requestAnimationFrame(() => updateDialTextScale(el));
+        }
+      });
+      updateCanvasBounds();
+      updateCountdowns();
+      updateSelectionUi();
+    }
+    function getFontSizePixels(val) {
+      if (typeof val === 'number') return val;
+      const parsed = parseInt(val, 10);
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+      if (val === 's') return 13;
+      if (val === 'm') return 16;
+      if (val === 'l') return 22;
+      if (val === 'xl') return 28;
+      return 16;
+    }
+    window.updateCardFontSize = function(cardId, rawValue) {
+      const val = parseInt(rawValue, 10);
+      if (isNaN(val) || val <= 0) return;
+      const clamped = Math.min(250, Math.max(6, val));
+      const card = cards.find(c => c.id === cardId);
+      if (!card) return;
+      const appliedToSelection = applyFormatToSelection(cardId, 'fontSize', clamped);
+      if (appliedToSelection) {
+        syncCardFromView(cardId);
+        persist();
+        return;
+      }
+      card.fontSize = clamped;
+      persist();
+      renderCards();
+    };
+    window.updateCardTextProp = function(cardId, prop, value) {
+      const card = cards.find(c => c.id === cardId);
+      if (!card) return;
+      if (prop === 'bgStyle') {
+        card.bgStyle = value;
+        const isLight = ['yellow', 'green', 'blue', 'pink'].includes(value);
+        if (isLight && (card.color === '#ffffff' || !card.color)) {
+          card.color = '#1f2937';
+        } else if (!isLight && card.color === '#1f2937') {
+          card.color = '#ffffff';
+        }
+        persist();
+        renderCards();
+        return;
+      }
+      if (prop === 'textAlign') {
+        card.textAlign = value;
+        persist();
+        renderCards();
+        return;
+      }
+      if (prop === 'fontSize') {
+        return updateCardFontSize(cardId, value);
+      }
+      const appliedToSelection = applyFormatToSelection(cardId, prop, value);
+      if (appliedToSelection) {
+        return;
+      }
+      if (['fontFamily', 'color'].includes(prop)) {
+        card[prop] = value;
+        persist();
+        renderCards();
+      }
+    };
+    function applyFormatToSelection(cardId, prop, value) {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0 || sel.isCollapsed) {
+        return false;
+      }
+      const viewEl = document.getElementById(`md-view-${cardId}`);
+      if (!viewEl) return false;
+      const range = sel.getRangeAt(0);
+      const container = range.commonAncestorContainer;
+      const targetParent = container.nodeType === 1 ? container : container.parentElement;
+      if (!viewEl.contains(targetParent) && targetParent !== viewEl) {
+        return false;
+      }
+      const selectedText = sel.toString();
+      if (!selectedText.trim()) return false;
+      let wrapper = null;
+      if (prop === 'color') {
+        wrapper = document.createElement('span');
+        wrapper.style.color = value;
+      } else if (prop === 'fontFamily') {
+        wrapper = document.createElement('span');
+        wrapper.className = `font-${value}`;
+      } else if (prop === 'fontSize') {
+        wrapper = document.createElement('span');
+        const px = getFontSizePixels(value);
+        wrapper.style.fontSize = `${px}px`;
+      } else if (prop === 'bold') {
+        wrapper = document.createElement('strong');
+      } else if (prop === 'italic') {
+        wrapper = document.createElement('em');
+      } else if (prop === 'highlight') {
+        wrapper = document.createElement('mark');
+        wrapper.style.cssText = 'background: rgba(254, 240, 138, 0.45); color: inherit; padding: 1px 3px; border-radius: 3px;';
+      } else if (prop === 'strikethrough') {
+        wrapper = document.createElement('s');
+      }
+      if (!wrapper) return false;
+      try {
+        const contents = range.extractContents();
+        wrapper.appendChild(contents);
+        range.insertNode(wrapper);
+        sel.removeAllRanges();
+        const newRange = document.createRange();
+        newRange.selectNodeContents(wrapper);
+        sel.addRange(newRange);
+        syncCardFromView(cardId);
+        return true;
+      } catch (err) {
+        console.warn('Erro ao formatar seleção:', err);
+        return false;
+      }
+    }
+    function syncCardFromView(cardId) {
+      const card = cards.find(c => c.id === cardId);
+      const viewEl = document.getElementById(`md-view-${cardId}`);
+      if (!card || !viewEl) return;
+      card.content = viewEl.innerHTML;
+      persist();
+    }
+    window.updateCardLineProp = function(cardId, prop, value) {
+      const card = cards.find(c => c.id === cardId);
+      if (!card) return;
+      card[prop] = value;
+      persist();
+      renderCards();
+    };
+    window.insertHorizontalRule = function(cardId) {
+      const card = cards.find(c => c.id === cardId);
+      const viewEl = document.getElementById(`md-view-${cardId}`);
+      if (!card || !viewEl) return;
+      const hr = document.createElement('hr');
+      hr.className = 'md-hr';
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0 && viewEl.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+        const range = sel.getRangeAt(0);
+        range.insertNode(hr);
+      } else {
+        viewEl.appendChild(hr);
+      }
+      syncCardFromView(cardId);
+    };
+    window.removeCard = function(id) {
+      cards = cards.filter(c => c.id !== id);
+      selectedCards.delete(id);
+      persist();
+      renderCards();
+    };
+    function setupDrag(el, card) {
+      let isDragging = false;
+      let startX = 0, startY = 0;
+      let didMove = false;
+      let draggedCardsInfo = [];
+      el.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.resize-handle, input, textarea, [contenteditable="true"], .btn-close, .excalidraw-text-toolbar')) return;
+        if (e.button !== 0) return;
+        isDragging = true;
+        didMove = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        const isMultiKey = e.ctrlKey || e.metaKey || e.shiftKey;
+        if (!selectedCards.has(card.id) && !isMultiKey) {
+          selectCard(card.id);
+        }
+        draggedCardsInfo = [];
+        selectedCards.forEach(id => {
+          const c = cards.find(item => item.id === id);
+          const cardEl = document.getElementById(id);
+          if (c && cardEl) {
+            cardEl.classList.add('dragging');
+            draggedCardsInfo.push({
+              card: c,
+              el: cardEl,
+              startX: c.x,
+              startY: c.y
+            });
+          }
+        });
+        if (draggedCardsInfo.length === 0) {
+          el.classList.add('dragging');
+          draggedCardsInfo.push({
+            card: card,
+            el: el,
+            startX: card.x,
+            startY: card.y
+          });
+        }
+        const onMouseMove = (moveEvent) => {
+          if (!isDragging) return;
+          const dx = (moveEvent.clientX - startX) / zoomLevel;
+          const dy = (moveEvent.clientY - startY) / zoomLevel;
+          if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+            didMove = true;
+          }
+          let snapDeltaX = 0;
+          let snapDeltaY = 0;
+          const otherCards = cards.filter(c => !draggedCardsInfo.some(d => d.card.id === c.id));
+          const primaryInfo = draggedCardsInfo[0];
+          const rawX = Math.max(10, primaryInfo.startX + dx);
+          const rawY = Math.max(10, primaryInfo.startY + dy);
+          if (!moveEvent.altKey && otherCards.length > 0) {
+            const { bestSnapX, bestSnapY } = computeSnapping(primaryInfo.card, primaryInfo.el, rawX, rawY, otherCards);
+            const pw = primaryInfo.el ? primaryInfo.el.offsetWidth : (primaryInfo.card.width || 200);
+            const ph = primaryInfo.el ? primaryInfo.el.offsetHeight : (primaryInfo.card.height || 100);
+            if (bestSnapX) {
+              snapDeltaX = bestSnapX.snapDelta;
+              const targetY = rawY + snapDeltaY;
+              const alignedTargets = otherCards.filter(o => {
+                const oEl = document.getElementById(o.id);
+                const ow = oEl ? oEl.offsetWidth : (o.width || 200);
+                return Math.abs(o.x - bestSnapX.guideCoord) < 1.5 ||
+                       Math.abs((o.x + ow / 2) - bestSnapX.guideCoord) < 1.5 ||
+                       Math.abs((o.x + ow) - bestSnapX.guideCoord) < 1.5;
+              });
+              const allY = [targetY, targetY + ph];
+              alignedTargets.forEach(o => {
+                const oEl = document.getElementById(o.id);
+                const oh = oEl ? oEl.offsetHeight : (o.height || 100);
+                allY.push(o.y, o.y + oh);
+              });
+              const minY = Math.min(...allY) - 20;
+              const maxY = Math.max(...allY) + 20;
+              smartGuideV.style.display = 'block';
+              smartGuideV.style.left = `${bestSnapX.guideCoord}px`;
+              smartGuideV.style.top = `${minY}px`;
+              smartGuideV.style.height = `${Math.max(15, maxY - minY)}px`;
+            } else {
+              smartGuideV.style.display = 'none';
+            }
+            if (bestSnapY) {
+              snapDeltaY = bestSnapY.snapDelta;
+              const targetX = rawX + snapDeltaX;
+              const alignedTargetsY = otherCards.filter(o => {
+                const oEl = document.getElementById(o.id);
+                const oh = oEl ? oEl.offsetHeight : (o.height || 100);
+                return Math.abs(o.y - bestSnapY.guideCoord) < 1.5 ||
+                       Math.abs((o.y + oh / 2) - bestSnapY.guideCoord) < 1.5 ||
+                       Math.abs((o.y + oh) - bestSnapY.guideCoord) < 1.5;
+              });
+              const allX = [targetX, targetX + pw];
+              alignedTargetsY.forEach(o => {
+                const oEl = document.getElementById(o.id);
+                const ow = oEl ? oEl.offsetWidth : (o.width || 200);
+                allX.push(o.x, o.x + ow);
+              });
+              const minX = Math.min(...allX) - 20;
+              const maxX = Math.max(...allX) + 20;
+              smartGuideH.style.display = 'block';
+              smartGuideH.style.top = `${bestSnapY.guideCoord}px`;
+              smartGuideH.style.left = `${minX}px`;
+              smartGuideH.style.width = `${Math.max(15, maxX - minX)}px`;
+            } else {
+              smartGuideH.style.display = 'none';
+            }
+          } else {
+            hideSmartGuides();
+          }
+          const actualDx = dx + snapDeltaX;
+          const actualDy = dy + snapDeltaY;
+          draggedCardsInfo.forEach(info => {
+            info.card.x = Math.max(10, Math.round(info.startX + actualDx));
+            info.card.y = Math.max(10, Math.round(info.startY + actualDy));
+            info.el.style.left = `${info.card.x}px`;
+            info.el.style.top = `${info.card.y}px`;
+          });
+        };
+        const onMouseUp = () => {
+          hideSmartGuides();
+          if (isDragging) {
+            isDragging = false;
+            draggedCardsInfo.forEach(info => {
+              info.el.classList.remove('dragging');
+            });
+            if (didMove) {
+              persist();
+            }
+          }
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
+        };
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+      });
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.resize-handle, input, textarea, [contenteditable="true"], .btn-close, .excalidraw-text-toolbar')) return;
+        const isMultiKey = e.ctrlKey || e.metaKey || e.shiftKey;
+        if (!isMultiKey && selectedCards.size > 1 && !didMove) {
+          selectCard(card.id);
+        }
+      });
+    }
+    function updateDialTextScale(el) {
+      if (!el) return;
+      const dial = el.querySelector('.circle-dial');
+      if (!dial) return;
+      const size = Math.min(dial.offsetWidth, dial.offsetHeight);
+      if (size > 0) {
+        const numEl = dial.querySelector('.circle-num');
+        const unitEl = dial.querySelector('.circle-unit');
+        if (numEl) numEl.style.fontSize = `${Math.round(size * 0.27)}px`;
+        if (unitEl) {
+          unitEl.style.fontSize = `${Math.max(8, Math.round(size * 0.09))}px`;
+          unitEl.style.marginTop = `${Math.max(2, Math.round(size * 0.02))}px`;
+        }
+      }
+    }
+    function setupResize(el, card) {
+      const handles = el.querySelectorAll('.resize-handle');
+      handles.forEach(handle => {
+        handle.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          const dir = handle.dataset.dir;
+          const startX = e.clientX;
+          const startY = e.clientY;
+          const startW = el.offsetWidth;
+          const startH = el.offsetHeight;
+          const startCardX = card.x;
+          const startCardY = card.y;
+          const onMouseMove = (moveEvent) => {
+            const dx = (moveEvent.clientX - startX) / zoomLevel;
+            const dy = (moveEvent.clientY - startY) / zoomLevel;
+            let newW = startW;
+            let newH = startH;
+            let newX = startCardX;
+            let newY = startCardY;
+            if (dir.includes('e')) newW = Math.max(60, startW + dx);
+            if (dir.includes('s')) newH = Math.max(40, startH + dy);
+            if (dir.includes('w')) {
+              const possibleW = Math.max(60, startW - dx);
+              newX = startCardX + (startW - possibleW);
+              newW = possibleW;
+            }
+            if (dir.includes('n')) {
+              const possibleH = Math.max(40, startH - dy);
+              newY = startCardY + (startH - possibleH);
+              newH = possibleH;
+            }
+            card.width = Math.round(newW);
+            card.height = Math.round(newH);
+            card.x = Math.round(newX);
+            card.y = Math.round(newY);
+            el.style.width = `${card.width}px`;
+            el.style.height = `${card.height}px`;
+            el.style.left = `${card.x}px`;
+            el.style.top = `${card.y}px`;
+            if (card.type === 'countdown') {
+              updateDialTextScale(el);
+            }
+          };
+          const onMouseUp = () => {
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+            persist();
+          };
+          window.addEventListener('mousemove', onMouseMove);
+          window.addEventListener('mouseup', onMouseUp);
+        });
+      });
+    }
+    function setupCardEvents(el, card) {
+      const titleEl = el.querySelector('.countdown-title');
+      if (titleEl) {
+        titleEl.onblur = () => {
+          card.title = titleEl.textContent.trim();
+          persist();
+        };
+      }
+      if (card.type === 'countdown') {
+        const dialEl = el.querySelector(`#dial-${card.id}`);
+        if (dialEl) {
+          dialEl.ondblclick = (e) => {
+            e.stopPropagation();
+            openCountdownDialog(card);
+          };
+        }
+      }
+      if (card.type === 'markdown') {
+        const viewEl = el.querySelector(`#md-view-${card.id}`);
+        if (!viewEl) return;
+        viewEl.ondblclick = (e) => {
+          e.stopPropagation();
+          viewEl.contentEditable = 'true';
+          viewEl.classList.add('editing');
+          viewEl.focus();
+        };
+        viewEl.onblur = () => {
+          viewEl.contentEditable = 'false';
+          viewEl.classList.remove('editing');
+          syncCardFromView(card.id);
+        };
+        viewEl.oninput = () => {
+          syncCardFromView(card.id);
+        };
+        viewEl.onkeydown = (e) => {
+          if (e.key === 'Escape') {
+            viewEl.blur();
+          }
+        };
+      }
+    }
+    function parseMd(text, cardId) {
+      if (!text || text.trim() === '' || text === '<br>' || text === '<p><br></p>') return '';
+      let escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      escaped = escaped.replace(/&lt;(\/?(?:span|strong|b|em|i|u|s|mark|code|br|p|h1|h2|h3|blockquote|hr)(?:\s+[^&>]*?)?)&gt;/gi, '<$1>');
+      escaped = escaped.replace(/^(?:---|___|\*\*\*)\s*$/gim, '<hr class="md-hr">');
+      escaped = escaped.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+      escaped = escaped.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+      escaped = escaped.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+      escaped = escaped.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>');
+      escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      escaped = escaped.replace(/~~(.*?)~~/g, '<s>$1</s>');
+      escaped = escaped.replace(/==(.*?)==/g, '<mark style="background: rgba(254, 240, 138, 0.45); color: inherit; padding: 1px 4px; border-radius: 3px;">$1</mark>');
+      escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>'); const lines = escaped.split('\n'); return lines.map((line, idx) => { const task = line.match(/^(\s*)-\s+\[([ xX])\]\s+(.*)/); if (task) { const checked = task[2].toLowerCase() === 'x'; return `<div class="markdown-task ${checked ? 'checked' : ''}" onclick="toggleTask('${cardId}', ${idx})">
+            <input type="checkbox" ${checked ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask('${cardId}', ${idx})">
+            <span>${task[3]}</span>
+          </div>`;
+        }
+        const trimmed = line.trim();
+        if (trimmed.startsWith('<p') || trimmed.startsWith('<h') || trimmed.startsWith('<div') || trimmed.startsWith('<blockquote') || trimmed.startsWith('<hr')) {
+          return line;
+        }
+        return `<p>${line || '&nbsp;'}</p>`;
+      }).join('');
+    }
+    window.toggleTask = function(cardId, lineIdx) {
+      const card = cards.find(c => c.id === cardId);
+      if (!card) return;
+      const lines = card.content.split('\n');
+      if (lines[lineIdx]) {
+        if (lines[lineIdx].includes('- [ ]')) lines[lineIdx] = lines[lineIdx].replace('- [ ]', '- [x]');
+        else if (lines[lineIdx].includes('- [x]') || lines[lineIdx].includes('- [X]')) lines[lineIdx] = lines[lineIdx].replace(/- \[[xX]\]/, '- [ ]');
+        card.content = lines.join('\n');
+        persist();
+        renderCards();
+      }
+    };
+    function updateCountdowns() {
+      const circumference = 301.6;
+      cards.forEach(card => {
+        if (card.type === 'countdown') {
+          const targetTs = parseTargetDate(card.targetDate);
+          const dialEl = document.getElementById(`dial-${card.id}`);
+          const numEl = document.getElementById(`c-num-${card.id}`);
+          const unitEl = document.getElementById(`c-unit-${card.id}`);
+          const barEl = document.getElementById(`c-bar-${card.id}`);
+          if (!numEl || !unitEl) return;
+          if (!targetTs || isNaN(targetTs)) {
+            numEl.textContent = '--';
+            unitEl.textContent = 'DATA?';
+            if (barEl) barEl.style.strokeDashoffset = circumference;
+            return;
+          }
+          const diff = targetTs - Date.now();
+          if (barEl) {
+            barEl.style.stroke = card.color || '#1ed760';
+          }
+          if (diff <= 0) {
+            numEl.textContent = '0';
+            unitEl.textContent = 'HOJE';
+            if (dialEl) dialEl.className = 'circle-dial expired';
+            if (barEl) {
+              barEl.style.strokeDashoffset = '0';
+              barEl.style.stroke = 'rgba(255, 255, 255, 0.2)';
+            }
+            return;
+          }
+          const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const totalHours = Math.floor(diff / (1000 * 60 * 60));
+          if (totalDays >= 1) {
+            numEl.textContent = String(totalDays).padStart(2, '0');
+            unitEl.textContent = totalDays === 1 ? 'DIA' : 'DIAS';
+            if (dialEl) dialEl.className = 'circle-dial';
+            if (barEl) barEl.style.strokeDashoffset = '0';
+          } else {
+            if (dialEl) dialEl.className = 'circle-dial final-hours';
+            if (totalHours >= 1) {
+              numEl.textContent = String(totalHours).padStart(2, '0');
+              unitEl.textContent = totalHours === 1 ? 'HORA' : 'HORAS';
+              const offset = circumference * (1 - (totalHours / 24));
+              if (barEl) barEl.style.strokeDashoffset = offset;
+            } else {
+              const mins = Math.max(1, Math.floor(diff / (1000 * 60)));
+              numEl.textContent = String(mins).padStart(2, '0');
+              unitEl.textContent = 'MIN';
+              const offset = circumference * (1 - (mins / 60));
+              if (barEl) barEl.style.strokeDashoffset = offset;
+            }
+          }
+        }
+      });
+    }
+    setInterval(updateCountdowns, 1000);
+    window.addEventListener('dragover', (e) => e.preventDefault());
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const file = e.dataTransfer.files[0];
+        if (file.type.startsWith('image/')) {
+          const pos = screenToCanvas(e.clientX, e.clientY);
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            createImageCard(evt.target.result, file.name.replace(/\.[^/.]+$/, ''), pos.x, pos.y);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    });
+    window.addEventListener('paste', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              createImageCard(evt.target.result, 'Imagem Colada', 150, 150);
+            };
+            reader.readAsDataURL(file);
+            break;
+          }
+        }
+      }
+    });
+    load();
+  </script>
+</body>
+</html>

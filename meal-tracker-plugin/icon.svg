@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#e11d48"/>
+    </linearGradient>
+    <linearGradient id="plateGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  
+  <!-- Fundo com cantos arredondados -->
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#bgGrad)" filter="url(#shadow)"/>
+  
+  <!-- Borda de brilho interno -->
+  <rect x="9" y="9" width="110" height="110" rx="27" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="2"/>
+  
+  <!-- Prato central -->
+  <circle cx="64" cy="64" r="32" fill="url(#plateGrad)" filter="url(#shadow)"/>
+  <circle cx="64" cy="64" r="24" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="64" cy="64" r="16" fill="#fed7aa" fill-opacity="0.4"/>
+  
+  <!-- Garfo à esquerda -->
+  <path d="M26 44 v18 c0 4 3 7 7 7 v25 c0 2 1.5 3 3 3 s3-1 3-3 V69 c4 0 7-3 7-7 V44 h-3 v14 h-2 V44 h-3 v14 h-2 V44 h-3 z" 
+        fill="#ffffff" filter="url(#shadow)"/>
+        
+  <!-- Faca à direita -->
+  <path d="M96 44 c-6 4-8 14-8 25 v22 c0 2 1.5 3 3 3 s3-1 3-3 V73 h2 c4 0 8-3 8-7 V44 h-8 z" 
+        fill="#ffffff" filter="url(#shadow)"/>
+        
+  <!-- Marcador de relógio/tempo no topo direito -->
+  <circle cx="92" cy="34" r="12" fill="#0f172a" stroke="#ffffff" stroke-width="2"/>
+  <polyline points="92,27 92,34 97,36" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

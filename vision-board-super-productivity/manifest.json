@@ -1,0 +1,20 @@
+{
+  "id": "broader-goals-dashboard",
+  "name": "Goals Vision Board",
+  "version": "2.0.0",
+  "description": "Quadro visual customizável para imagens, countdowns em tempo real e notas em Markdown",
+  "manifestVersion": 1,
+  "minSupVersion": "18.9.1",
+  "author": "VisionBoard",
+  "icon": "icon.svg",
+  "iFrame": true,
+  "sidePanel": false,
+  "uiKit": true,
+  "isSkipMenuEntry": false,
+  "permissions": [
+    "showIndexHtmlAsView",
+    "persistDataSynced",
+    "loadSyncedData",
+    "showSnack"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "meal-tracker",
+  "name": "Registro de Refeições",
+  "description": "Registre suas refeições com horário em tempo real e acompanhe seu histórico diário.",
+  "version": "1.0.0",
+  "manifestVersion": 1,
+  "minSupVersion": "14.0.0",
+  "author": "Antigravity",
+  "permissions": [
+    "showIndexHtmlAsView",
+    "persistDataSynced",
+    "loadSyncedData",
+    "addTask",
+    "getTasks",
+    "showSnack",
+    "notify"
+  ],
+  "hooks": [],
+  "iFrame": true,
+  "isSkipMenuEntry": false,
+  "icon": "icon.svg",
+  "categories": [
+    "health",
+    "lifestyle"
+  ],
+  "tags": [
+    "meals",
+    "food",
+    "nutrition",
+    "refeicoes",
+    "saude"
+  ]
+}

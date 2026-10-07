@@ -1,0 +1,12 @@
+# Node dependencies
+node_modules/
+**/node_modules/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.bak
+
+# Local backups and temporary files
+SAFE_BACKUP*
+*.jpeg
