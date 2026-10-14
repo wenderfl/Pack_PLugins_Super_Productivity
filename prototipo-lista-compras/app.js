@@ -113,27 +113,10 @@ function getCatColor(cat) {
 
 function getCatSvg(cat) {
   const c = cat || '';
-  let d = 'M18 6h-2a4 4 0 0 0-8 0H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-6-2a2 2 0 0 1 2 2h-4a2 2 0 0 1 2-2z';
   if (c.includes('Fruta') || c.includes('Verdura') || c.includes('Legume')) {
-    d = 'M12 2c.6 0 1 .4 1 1v1.1c2.8.5 5 3 5 6 0 3.9-3.1 7.9-6 7.9s-6-4-6-7.9c0-3 2.2-5.5 5-6V3c0-.6.4-1 1-1zm0 4.1C9.8 6.1 8 7.9 8 10.1c0 2.9 2.1 6 4 6s4-3.1 4-6c0-2.2-1.8-4-4-4z';
-  } else if (c.includes('Carne') || c.includes('Proteína')) {
-    d = 'M17.5 4c-2.5 0-4.5 1.5-5.5 3.5C11 5.5 9 4 6.5 4 3.5 4 1 6.5 1 9.5c0 4 5 8.5 10 10.5h2c5-2 10-6.5 10-10.5 0-3-2.5-5.5-5.5-5.5z';
-  } else if (c.includes('Bebida')) {
-    d = 'M5 3h14l-2 10h-10zm2 12h10l1 5h-12z';
-  } else if (c.includes('Padaria') || c.includes('Laticínio') || c.includes('Confeitaria')) {
-    d = 'M12 4C6 4 3 7 3 11c0 3 2 5 5 5h8c3 0 5-2 5-5 0-4-3-7-9-7zm0 2c4 0 7 2 7 5 0 2-1 3-3 3H8c-2 0-3-1-3-3 0-3 3-5 7-5z';
-  } else if (c.includes('Biscoito') || c.includes('Doce') || c.includes('Sorvete') || c.includes('Snack')) {
-    d = 'M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm-2 5a1.5 1.5 0 1 1-1.5 1.5A1.5 1.5 0 0 1 10 7zm-3 5a1.5 1.5 0 1 1 1.5 1.5A1.5 1.5 0 0 1 7 12zm8 4a1.5 1.5 0 1 1 1.5-1.5A1.5 1.5 0 0 1 15 16zm1-7a1.5 1.5 0 1 1-1.5 1.5A1.5 1.5 0 0 1 16 9z';
-  } else if (c.includes('Limpeza') || c.includes('Doméstica')) {
-    d = 'm12 2 1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5zm6 12 1 3 3 1-3 1-1 3-1-3-3-1 3-1z';
-  } else if (c.includes('Higiene') || c.includes('Farmácia')) {
-    d = 'M10.5 3h3v6h6v3h-6v6h-3v-6h-6v-3h6z';
-  } else if (c.includes('Infantil')) {
-    d = 'M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 12c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z';
-  } else if (c.includes('Pet')) {
-    return '<svg viewBox="0 0 24 24"><circle cx="5" cy="9" r="2"/><circle cx="9" cy="5" r="2"/><circle cx="15" cy="5" r="2"/><circle cx="19" cy="9" r="2"/><path d="M12 10c-3 0-5 2-5 5 0 2 2 4 5 4s5-2 5-4c0-3-2-5-5-5z"/></svg>';
+    return '<svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5c0 4 5 10 5 10s5-6 5-10a5 5 0 0 0-5-5z"/></svg>';
   }
-  return `<svg viewBox="0 0 24 24"><path d="${d}"/></svg>`;
+  return '<svg viewBox="0 0 24 24"><path d="M19 6h-2c0-2.8-2.2-5-5-5S7 3.2 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.7 0 3 1.3 3 3H9c0-1.7 1.3-3 3-3z"/></svg>';
 }
 
 function handleIconError(img, cat) {
@@ -1587,68 +1570,11 @@ function formatAiResponse(text) {
 // Ferramentas de IA: Leitura e Modificação de Lista, Despensa e Catálogo
 // ============================================================================
 const AI_TOOLS_DEFINITIONS = [
-  {
-    name: 'read_current_state',
-    description: 'Le lista de compras e despensa.',
-    input_schema: {
-      type: 'object',
-      properties: { filter: { type: 'string' } }
-    }
-  },
-  {
-    name: 'search_catalog',
-    description: 'Busca produtos no catalogo.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        query: { type: 'string' },
-        category: { type: 'string' }
-      },
-      required: ['query']
-    }
-  },
-  {
-    name: 'modify_shopping_list',
-    description: 'Modifica lista de compras.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        action: { type: 'string', enum: ['add', 'update', 'remove', 'mark_purchased'] },
-        product_name: { type: 'string' },
-        quantity: { type: 'number' },
-        price: { type: 'number' },
-        unit: { type: 'string' },
-        purchased: { type: 'boolean' }
-      },
-      required: ['action', 'product_name']
-    }
-  },
-  {
-    name: 'modify_pantry',
-    description: 'Modifica itens da despensa.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        action: { type: 'string', enum: ['add', 'update_quantity', 'update_status', 'remove', 'move_from_shopping'] },
-        product_name: { type: 'string' },
-        quantity: { type: 'number' },
-        status: { type: 'string', enum: ['full', 'low', 'empty'] }
-      },
-      required: ['action', 'product_name']
-    }
-  },
-  {
-    name: 'modify_catalog_item',
-    description: 'Modifica unidade de produto no catalogo.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        product_name: { type: 'string' },
-        new_unit: { type: 'string' }
-      },
-      required: ['product_name']
-    }
-  }
+  { name: 'read_current_state', description: 'Le lista e despensa', input_schema: { type: 'object' } },
+  { name: 'search_catalog', description: 'Busca no catalogo', input_schema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] } },
+  { name: 'modify_shopping_list', description: 'Modifica lista', input_schema: { type: 'object', properties: { action: { type: 'string' }, product_name: { type: 'string' }, quantity: { type: 'number' } }, required: ['action', 'product_name'] } },
+  { name: 'modify_pantry', description: 'Modifica despensa', input_schema: { type: 'object', properties: { action: { type: 'string' }, product_name: { type: 'string' }, quantity: { type: 'number' }, status: { type: 'string' } }, required: ['action', 'product_name'] } },
+  { name: 'modify_catalog_item', description: 'Modifica catalogo', input_schema: { type: 'object', properties: { product_name: { type: 'string' }, new_unit: { type: 'string' } }, required: ['product_name'] } }
 ];
 
 function findProductInCatalog(name) {
@@ -1893,22 +1819,30 @@ Regras: NUNCA use emojis. Responda em portugues de forma concisa.`;
 
   // Suporte a multi-turn tool calling (até 4 iterações)
   for (let iter = 0; iter < 4; iter++) {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: model,
-        max_tokens: 1000,
-        system: systemPrompt,
-        tools: AI_TOOLS_DEFINITIONS,
-        messages: currentMessages
-      })
-    });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 1800);
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        signal: controller.signal,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 1000,
+          system: systemPrompt,
+          tools: AI_TOOLS_DEFINITIONS,
+          messages: currentMessages
+        })
+      });
+    } finally {
+      clearTimeout(timer);
+    }
 
     if (!response.ok) {
       throw new Error(`OmniRoute error status: ${response.status}`);
@@ -1921,13 +1855,11 @@ Regras: NUNCA use emojis. Responda em portugues de forma concisa.`;
     const textBlocks = (data.content || []).filter(c => c.type === 'text' && c.text && c.text !== '(empty response)');
 
     if (toolUseBlocks.length > 0) {
-      // Registra a resposta do assistente no fluxo
       currentMessages.push({
         role: 'assistant',
         content: data.content
       });
 
-      // Executa cada ferramenta
       const toolResults = [];
       for (const toolCall of toolUseBlocks) {
         const result = executeAiTool(toolCall.name, toolCall.input || {});
@@ -1938,7 +1870,6 @@ Regras: NUNCA use emojis. Responda em portugues de forma concisa.`;
         });
       }
 
-      // Adiciona o resultado como resposta do usuário para a próxima iteração
       currentMessages.push({
         role: 'user',
         content: toolResults
@@ -1946,7 +1877,6 @@ Regras: NUNCA use emojis. Responda em portugues de forma concisa.`;
       continue;
     }
 
-    // Se não há tool calls, retorna o texto final
     if (textBlocks.length > 0) {
       return textBlocks.map(t => t.text).join('\n');
     }
@@ -1962,9 +1892,59 @@ Regras: NUNCA use emojis. Responda em portugues de forma concisa.`;
 }
 
 function generateAiLocalFallback(prompt) {
-  const p = prompt.toLowerCase();
+  const p = normalizeStr(prompt);
   const lowPantry = state.pantryList.filter(i => i.status === 'low' || i.status === 'empty');
   const fullPantry = state.pantryList.filter(i => i.status === 'full');
+
+  if (p.includes('limpar') && p.includes('lista')) {
+    state.shoppingList = [];
+    state.lastActiveItem = null;
+    saveShoppingList();
+    renderShoppingList();
+    renderMarketMode();
+    return 'Lista de compras esvaziada com sucesso.';
+  }
+
+  const sorted = [...state.products].sort((a, b) => b.nome.length - a.nome.length);
+  const prod = sorted.find(item => p.includes(normalizeStr(item.nome)));
+  const numMatch = prompt.match(/\b(\d+(?:[.,]\d+)?)\s*(kg|g|l|ml|un|duzia|pct)?\b/i);
+  const qty = numMatch ? parseFloat(numMatch[1].replace(',', '.')) : 1;
+
+  if (/(remov|tirar|tire|apagar|exclui)/i.test(p)) {
+    const target = prod || state.shoppingList.find(i => p.includes(normalizeStr(i.nome)));
+    if (target) {
+      executeAiTool('modify_shopping_list', { action: 'remove', product_name: target.nome });
+      return `Removi <strong>${target.nome}</strong> da sua lista de compras.`;
+    }
+    return 'Qual item voce deseja remover?';
+  }
+
+  if (/(marqu|comprei|ja comprei|concluid)/i.test(p)) {
+    const target = prod ? state.shoppingList.find(i => i.nome === prod.nome) : state.shoppingList.find(i => p.includes(normalizeStr(i.nome)));
+    if (target) {
+      target.comprado = true;
+      saveShoppingList();
+      renderShoppingList();
+      renderMarketMode();
+      playChime(true);
+      return `Marquei <strong>${target.nome}</strong> como comprado na sua lista!`;
+    }
+    return 'Item nao encontrado na lista para marcar.';
+  }
+
+  if (p.includes('despensa') && /(adicion|coloc|coloq|guard|inclu|bot|ponh|põe)/i.test(p)) {
+    if (prod) {
+      executeAiTool('modify_pantry', { action: 'add', product_name: prod.nome, quantity: qty });
+      return `Adicionei <strong>${prod.nome}</strong> (${qty} ${prod.unidade}) a sua Despensa!`;
+    }
+  }
+
+  if (/(adicion|compr|coloc|coloq|inclu|bot|ponh|põe)/i.test(p) || (prod && !p.includes('receita') && !p.includes('tem') && !p.includes('preco'))) {
+    if (prod) {
+      executeAiTool('modify_shopping_list', { action: 'add', product_name: prod.nome, quantity: qty });
+      return `Adicionei <strong>${prod.nome}</strong> (${qty} ${prod.unidade}) a sua lista de compras!`;
+    }
+  }
 
   if (p.includes('falta') || p.includes('despensa') || p.includes('essencia')) {
     if (lowPantry.length > 0) {
@@ -1977,7 +1957,7 @@ function generateAiLocalFallback(prompt) {
   if (p.includes('receita') || p.includes('cozinhar') || p.includes('comida')) {
     if (fullPantry.length > 0) {
       const items = fullPantry.slice(0, 3).map(i => i.nome).join(', ');
-      return `Com base em (${items}), sugiro um prato rapido. Deseja adicionar itens a lista?`;
+      return `Com base em (${items}), sugiro preparar um prato rapido. Deseja adicionar complementos a lista?`;
     }
     return 'Cadastre itens na Despensa para sugestoes de receitas!';
   }
@@ -1991,5 +1971,5 @@ function generateAiLocalFallback(prompt) {
     return `Total estimado: <strong>${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong> (${state.shoppingList.length} itens).`;
   }
 
-  return 'Posso ajudar a organizar o estoque, sugerir receitas ou itens do catalogo!';
+  return 'Comandos disponiveis: adicione ou remova itens ("adicione leite", "comprar 2 jiló"), marque comprados ("comprei ovos") ou consulte o total.';
 }
