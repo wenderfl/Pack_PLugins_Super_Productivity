@@ -1,0 +1,37 @@
+{
+  "id": "lista-de-compras",
+  "name": "Lista de Compras",
+  "description": "Lista de compras inteligente e despensa com catálogo visual de 521 itens, assistente IA e interface inspirada no Spotify.",
+  "version": "1.0.0",
+  "manifestVersion": 1,
+  "minSupVersion": "14.0.0",
+  "author": "Antigravity",
+  "icon": "icon.svg",
+  "iFrame": true,
+  "sidePanel": false,
+  "uiKit": true,
+  "isSkipMenuEntry": false,
+  "permissions": [
+    "showIndexHtmlAsView",
+    "persistDataSynced",
+    "loadSyncedData",
+    "showSnack",
+    "notify"
+  ],
+  "hooks": [
+    "persistedDataChanged"
+  ],
+  "categories": [
+    "productivity",
+    "lifestyle",
+    "utilities"
+  ],
+  "tags": [
+    "shopping",
+    "groceries",
+    "pantry",
+    "despensa",
+    "compras",
+    "mercado"
+  ]
+}

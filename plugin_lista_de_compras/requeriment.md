@@ -1,0 +1,1 @@
+O Super Productivity tem uma trava rígida de no máximo 100 KB (102.400 bytes) para o arquivo index.html. 

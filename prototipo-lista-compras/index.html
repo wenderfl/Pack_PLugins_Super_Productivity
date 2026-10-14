@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listou - Lista de Compras & Despensa</title>
+  <meta name="description" content="Aplicativo de lista de compras e despensa inteligente com design inspirado no Spotify e catalogo visual de produtos.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Hidden SVG Symbol Definitions for Clean Modular Icons -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <!-- Shopping Bag / Cart -->
+    <symbol id="icon-bag" viewBox="0 0 24 24">
+      <path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3z"/>
+    </symbol>
+    <!-- Checkmark -->
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+    </symbol>
+    <!-- Plus -->
+    <symbol id="icon-plus" viewBox="0 0 24 24">
+      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+    </symbol>
+    <!-- Minus -->
+    <symbol id="icon-minus" viewBox="0 0 24 24">
+      <path d="M19 13H5v-2h14v2z"/>
+    </symbol>
+    <!-- Search -->
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    </symbol>
+    <!-- Trash / Delete -->
+    <symbol id="icon-trash" viewBox="0 0 24 24">
+      <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+    </symbol>
+    <!-- Close / Clear -->
+    <symbol id="icon-close" viewBox="0 0 24 24">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+    </symbol>
+    <!-- Share -->
+    <symbol id="icon-share" viewBox="0 0 24 24">
+      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+    </symbol>
+    <!-- Broom / Clean -->
+    <symbol id="icon-broom" viewBox="0 0 24 24">
+      <path d="M19.36 2.72l1.42 1.42-4.24 4.24 1.41 1.41-1.41 1.41-1.42-1.41-3.53 3.53c-.39.39-1.02.39-1.41 0l-1.42-1.42c-.39-.39-.39-1.02 0-1.41l3.54-3.54-1.42-1.41 1.41-1.41 1.41 1.41 4.25-4.23zM5.93 17.57l3.54-3.54 1.41 1.41-3.53 3.54c-.78.78-2.05.78-2.83 0l-1.41-1.41c-.79-.79-.79-2.05 0-2.83l2.82-2.82 1.41 1.41-1.41 1.42v2.82z"/>
+    </symbol>
+    <!-- AI Chat / Sparkles -->
+    <symbol id="icon-sparkles" viewBox="0 0 24 24">
+      <path d="M9 21l-1.4-3.1L4.5 16.5l3.1-1.4L9 12l1.4 3.1 3.1 1.4-3.1 1.4L9 21zm10-10l-1.4-3.1L14.5 6.5l3.1-1.4L19 2l1.4 3.1 3.1 1.4-3.1 1.4L19 11zm-8.5-1l-2.4-5.3L2.8 2.3l5.3 2.4L10.5 10zm0 0l2.4 5.3 5.3 2.4-5.3 2.4-2.4-5.3-5.3-2.4 5.3-2.4z"/>
+    </symbol>
+    <!-- Settings / Gear -->
+    <symbol id="icon-settings" viewBox="0 0 24 24">
+      <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </symbol>
+    <!-- List -->
+    <symbol id="icon-list" viewBox="0 0 24 24">
+      <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+    </symbol>
+    <!-- Lightning / Market Mode -->
+    <symbol id="icon-bolt" viewBox="0 0 24 24">
+      <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+    </symbol>
+    <!-- Grid -->
+    <symbol id="icon-grid" viewBox="0 0 24 24">
+      <path d="M4 11h5V5H4v6zm0 7h5v-5H4v5zm6 0h5v-5h-5v5zm6 0h5v-5h-5v5zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/>
+    </symbol>
+    <!-- Despensa / Pantry Cabinet -->
+    <symbol id="icon-pantry" viewBox="0 0 24 24">
+      <path d="M4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v7h7V4H4zm9 0v7h7V4h-7zm7 9h-7v7h7v-7zm-9 7v-7H4v7h7z"/>
+    </symbol>
+    <!-- Chevron Up -->
+    <symbol id="icon-chevron-up" viewBox="0 0 24 24">
+      <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </symbol>
+    <!-- Chevron Down -->
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24">
+      <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+    </symbol>
+    <!-- Sync / Refresh -->
+    <symbol id="icon-sync" viewBox="0 0 24 24">
+      <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+    </symbol>
+  </svg>
+
+  <div class="spotify-app">
+    
+    <!-- Top Header -->
+    <header class="sp-header">
+      <div class="sp-header-row">
+        <div class="sp-brand">
+          <div class="sp-logo-circle">
+            <svg class="icon-svg-lg"><use href="#icon-bag"></use></svg>
+          </div>
+          <div class="sp-brand-text">
+            <h1>Listou</h1>
+            <span>Gestao de Compras & Despensa</span>
+          </div>
+        </div>
+
+        <div class="sp-header-actions">
+          <button class="sp-btn-icon" id="aiChatBtn" title="Chat com Assistente IA" aria-label="Chat com Assistente IA">
+            <svg class="icon-svg"><use href="#icon-sparkles"></use></svg>
+          </button>
+          <button class="sp-btn-icon" id="settingsBtn" title="Configuracoes" aria-label="Configuracoes">
+            <svg class="icon-svg"><use href="#icon-settings"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs (Spotify Pills) -->
+      <nav class="sp-nav-pills" role="tablist">
+        <button class="sp-pill-btn active" id="tabMinhaLista" data-tab="viewMinhaLista" role="tab">
+          <svg class="icon-svg"><use href="#icon-list"></use></svg>
+          Minha Lista 
+          <span class="sp-count-badge" id="badgeListCount">0</span>
+        </button>
+        <button class="sp-pill-btn" id="tabCatalogo" data-tab="viewCatalogo" role="tab">
+          <svg class="icon-svg"><use href="#icon-grid"></use></svg>
+          Catalogo 
+          <span class="sp-count-badge" id="badgeCatalogCount">521</span>
+        </button>
+        <button class="sp-pill-btn" id="tabDespensa" data-tab="viewDespensa" role="tab">
+          <svg class="icon-svg"><use href="#icon-pantry"></use></svg>
+          Despensa
+          <span class="sp-count-badge" id="badgePantryCount">0</span>
+        </button>
+        <button class="sp-pill-btn" id="tabModoMercado" data-tab="viewModoMercado" role="tab">
+          <svg class="icon-svg"><use href="#icon-bolt"></use></svg>
+          Modo Mercado
+        </button>
+      </nav>
+    </header>
+
+    <!-- =========================================================================
+         VIEW 1: Minha Lista (Spotify Playlist Layout)
+         ========================================================================= -->
+    <main class="view-section active" id="viewMinhaLista">
+      <div class="sp-list-toolbar">
+        <div class="sp-filter-group">
+          <button class="sp-filter-chip active" data-filter="all" id="filterAll">Todos</button>
+          <button class="sp-filter-chip" data-filter="pending" id="filterPending">Pendentes</button>
+          <button class="sp-filter-chip" data-filter="completed" id="filterCompleted">Comprados</button>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="sp-btn-secondary" id="btnMoveAllPurchased" title="Mover todos os itens comprados para a despensa">
+            <svg class="icon-svg"><use href="#icon-pantry"></use></svg>
+            Guardar Comprados
+          </button>
+          <button class="sp-btn-primary" id="btnGoToCatalog">
+            <svg class="icon-svg"><use href="#icon-plus"></use></svg>
+            Adicionar do Catalogo
+          </button>
+        </div>
+      </div>
+
+      <!-- Container das Categorias e Itens -->
+      <div id="shoppingListContainer">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </main>
+
+    <!-- =========================================================================
+         VIEW 2: Catálogo de Produtos (Spotify Album Grid)
+         ========================================================================= -->
+    <section class="view-section" id="viewCatalogo">
+      <!-- Search Input -->
+      <div class="sp-search-bar">
+        <span class="sp-search-icon">
+          <svg class="icon-svg"><use href="#icon-search"></use></svg>
+        </span>
+        <input 
+          type="text" 
+          class="sp-search-input" 
+          id="catalogSearchInput" 
+          placeholder="O que voce quer adicionar a lista? (Ex: Cafe, Arroz, Leite...)"
+          autocomplete="off"
+        >
+        <button class="sp-search-clear" id="clearSearchBtn" aria-label="Limpar pesquisa">
+          <svg class="icon-svg"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="sp-category-pills" id="categoryChipsContainer">
+        <!-- Injetado via JS -->
+      </div>
+
+      <!-- Result Count -->
+      <div style="font-size: 0.85rem; color: var(--sp-subtext); margin-bottom: 14px; font-weight: 600;">
+        <span id="catalogResultsCount">Exibindo 521 produtos</span>
+      </div>
+
+      <!-- 521 Album/Product Cards Grid -->
+      <div class="sp-album-grid" id="catalogGrid">
+        <!-- Cards injetados via JS -->
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         VIEW 3: Despensa (Pantry Inventory)
+         ========================================================================= -->
+    <section class="view-section" id="viewDespensa">
+      <div class="sp-pantry-toolbar">
+        <div class="sp-filter-group">
+          <button class="sp-filter-chip active" data-pantry-filter="all" id="pantryFilterAll">Todos</button>
+          <button class="sp-filter-chip" data-pantry-filter="low" id="pantryFilterLow">Acabando</button>
+          <button class="sp-filter-chip" data-pantry-filter="empty" id="pantryFilterEmpty">Esgotados</button>
+          <button class="sp-filter-chip" data-pantry-filter="full" id="pantryFilterFull">Em Estoque</button>
+        </div>
+
+        <div class="sp-pantry-actions">
+          <button class="sp-btn-primary" id="btnRestockAllLow" title="Adiciona todos os itens acabando ou esgotados a lista de compras">
+            <svg class="icon-svg"><use href="#icon-sync"></use></svg>
+            Repor Itens em Falta
+          </button>
+          <button class="sp-btn-secondary" id="btnAddPantryItem">
+            <svg class="icon-svg"><use href="#icon-plus"></use></svg>
+            Adicionar a Despensa
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid de Itens da Despensa -->
+      <div class="sp-pantry-grid" id="pantryGrid">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         VIEW 4: Modo Mercado (Market Focus View)
+         ========================================================================= -->
+    <section class="view-section" id="viewModoMercado">
+      <div class="sp-market-banner">
+        <div class="sp-market-title">
+          <h2>Modo Mercado</h2>
+          <p>Visualizacao focada de alto contraste para marcar itens no carrinho.</p>
+        </div>
+        <button class="sp-btn-primary" id="finishShoppingBtn">
+          <svg class="icon-svg"><use href="#icon-check"></use></svg>
+          Concluir Compras
+        </button>
+      </div>
+
+      <div class="sp-market-list" id="marketItemsList">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- =========================================================================
+       Spotify Bottom Player Bar (Persistent Shopping Summary)
+       ========================================================================= -->
+  <footer class="sp-bottom-player">
+    <!-- Left: Last modified / active item -->
+    <div class="sp-player-left" id="playerActiveItemBox">
+      <div class="sp-now-item-thumb" id="playerThumb">
+        <img src="icones/Abacate.webp" alt="Produto">
+      </div>
+      <div>
+        <div class="sp-now-item-title" id="playerTitle">Lista de Compras</div>
+        <div class="sp-now-item-sub" id="playerSub">Pronto para comprar</div>
+      </div>
+    </div>
+
+    <!-- Center: Progress Track & Stats -->
+    <div class="sp-player-center">
+      <div class="sp-player-stats" id="playerProgressStats">
+        0 de 0 itens concluidos (0%)
+      </div>
+      <div class="sp-progress-track">
+        <div class="sp-progress-fill" id="playerProgressFill"></div>
+      </div>
+    </div>
+
+    <!-- Right: Total Value Estimate -->
+    <div class="sp-player-right">
+      <div class="sp-total-box">
+        <div class="sp-total-label">Total Estimado</div>
+        <div class="sp-total-val" id="playerTotalVal">R$ 0,00</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div class="sp-toast-container" id="toastContainer"></div>
+
+  <!-- Modal: Adicionar Item na Despensa a partir do Catálogo -->
+  <div class="sp-modal-overlay" id="addPantryModal">
+    <div class="sp-modal-box" style="max-width: 520px;">
+      <div class="sp-modal-head">
+        <h3>Adicionar a Despensa</h3>
+        <button class="sp-modal-close" id="closeAddPantryModalBtn">
+          <svg class="icon-svg"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+      
+      <div style="margin-bottom: 14px;">
+        <input 
+          type="text" 
+          class="sp-search-input" 
+          id="pantryModalSearch" 
+          placeholder="Buscar no catalogo para guardar na despensa..."
+          style="padding: 10px 18px; font-size: 0.9rem;"
+        >
+      </div>
+
+      <div id="pantryModalCatalogResults" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+        <!-- Injetado dinamicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Finished Purchase Summary Modal -->
+  <div class="sp-modal-overlay" id="summaryModal">
+    <div class="sp-modal-box">
+      <div class="sp-modal-head">
+        <h3>Compras Finalizadas</h3>
+        <button class="sp-modal-close" id="closeSummaryModalBtn">
+          <svg class="icon-svg"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+      <div style="background-color: var(--sp-dark); padding: 18px; border-radius: var(--radius-sm); margin-bottom: 20px; border: 1px solid var(--sp-border);">
+        <div style="font-size: 0.8rem; color: var(--sp-subtext); text-transform: uppercase; font-weight: 700;">Total Gasto</div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--sp-green);" id="modalTotalSpent">R$ 0,00</div>
+        <div style="font-size: 0.9rem; color: var(--sp-subtext); margin-top: 6px;" id="modalItemsSummary">
+          Voce comprou 0 de 0 itens na lista.
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+        <button class="sp-pill-btn" id="modalClearListBtn">Limpar da Lista</button>
+        <button class="sp-btn-secondary" id="modalMoveToPantryBtn" style="padding: 10px 18px;">
+          <svg class="icon-svg"><use href="#icon-pantry"></use></svg>
+          Mover para Despensa
+        </button>
+        <button class="sp-btn-primary" id="modalCloseBtn">Concluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Chat Modal / Drawer -->
+  <div class="sp-modal-overlay" id="aiChatModal">
+    <div class="sp-modal-box sp-chat-modal-box">
+      <div class="sp-modal-head">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="sp-ai-badge-avatar">
+            <svg class="icon-svg" style="fill: var(--sp-green);"><use href="#icon-sparkles"></use></svg>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.1rem;">Assistente IA de Compras</h3>
+            <span style="font-size: 0.75rem; color: var(--sp-subtext);">Sugestoes inteligentes para receitas, lista e despensa</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="sp-btn-icon" id="clearAiChatBtn" title="Limpar conversa" aria-label="Limpar conversa" style="width: 32px; height: 32px;">
+            <svg class="icon-svg-xs"><use href="#icon-trash"></use></svg>
+          </button>
+          <button class="sp-modal-close" id="closeAiChatModalBtn">
+            <svg class="icon-svg"><use href="#icon-close"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="sp-chat-suggestions">
+        <button class="sp-chip-prompt" data-prompt="Quais itens essenciais estao faltando na minha despensa?">
+          Itens em falta na despensa
+        </button>
+        <button class="sp-chip-prompt" data-prompt="Sugira uma receita rapida com os produtos que tenho em casa">
+          Receita com o que tenho
+        </button>
+        <button class="sp-chip-prompt" data-prompt="Monte uma lista de compras saudavel para a semana">
+          Lista semanal saudavel
+        </button>
+      </div>
+
+      <div class="sp-chat-history" id="aiChatHistory">
+        <div class="sp-chat-msg bot">
+          <div class="sp-msg-bubble">
+            Ola! Sou o assistente inteligente do Listou. Como posso te ajudar com a sua lista de compras ou despensa hoje?
+          </div>
+        </div>
+      </div>
+
+      <form class="sp-chat-input-bar" id="aiChatForm">
+        <input 
+          type="text" 
+          id="aiChatInput" 
+          placeholder="Pergunte algo ou peca sugestoes de compras..." 
+          autocomplete="off"
+        >
+        <button type="submit" class="sp-btn-send" id="aiChatSendBtn" aria-label="Enviar mensagem">
+          <svg class="icon-svg"><use href="#icon-plus"></use></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="sp-modal-overlay" id="settingsModal">
+    <div class="sp-modal-box">
+      <div class="sp-modal-head">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <svg class="icon-svg" style="fill: var(--sp-white);"><use href="#icon-settings"></use></svg>
+          <h3 style="margin: 0; font-size: 1.1rem;">Configuracoes</h3>
+        </div>
+        <button class="sp-modal-close" id="closeSettingsModalBtn">
+          <svg class="icon-svg"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+
+      <div class="sp-settings-group">
+        <div class="sp-setting-row">
+          <div>
+            <div class="sp-setting-title">Feedback Sonoro</div>
+            <div class="sp-setting-sub">Tocar aviso sonoro ao marcar e adicionar itens</div>
+          </div>
+          <input type="checkbox" id="settingSoundToggle" checked class="sp-toggle-input">
+        </div>
+
+        <div class="sp-setting-row">
+          <div>
+            <div class="sp-setting-title">Exportar Dados</div>
+            <div class="sp-setting-sub">Baixar backup da lista e despensa em JSON</div>
+          </div>
+          <button class="sp-pill-btn" id="btnExportData">Exportar</button>
+        </div>
+
+        <div class="sp-setting-row">
+          <div>
+            <div class="sp-setting-title">Compartilhar Lista</div>
+            <div class="sp-setting-sub">Enviar lista formatada via WhatsApp</div>
+          </div>
+          <button class="sp-pill-btn" id="btnShareListSettings">
+            <svg class="icon-svg"><use href="#icon-share"></use></svg>
+            Compartilhar
+          </button>
+        </div>
+
+        <div class="sp-setting-row">
+          <div style="flex: 1; margin-right: 12px;">
+            <div class="sp-setting-title">Servidor de Fotos dos Produtos</div>
+            <div class="sp-setting-sub">URL base para carregar os 521 icones fotograficos (ex: http://localhost:4321/icones)</div>
+            <input type="text" id="settingIconBaseInput" class="sp-search-input" style="width: 100%; margin-top: 8px; font-size: 0.82rem; padding: 6px 12px;" placeholder="http://localhost:4321/icones">
+          </div>
+          <button class="sp-pill-btn" id="btnSaveIconBase" style="align-self: flex-end;">Salvar</button>
+        </div>
+
+        <div class="sp-setting-row" style="border-bottom: none;">
+          <div>
+            <div class="sp-setting-title" style="color: var(--sp-danger);">Redefinir Dados</div>
+            <div class="sp-setting-sub">Limpar todos os produtos e reiniciar configuracao inicial</div>
+          </div>
+          <button class="sp-pill-btn" id="btnResetData" style="border-color: rgba(226, 33, 52, 0.4); color: var(--sp-danger);">
+            Redefinir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Reset Confirmation Modal (Works reliably in iframe and desktop) -->
+  <div class="sp-modal-overlay" id="resetConfirmModal" style="z-index: 600;">
+    <div class="sp-modal-box" style="max-width: 380px;">
+      <div class="sp-modal-head">
+        <h3 style="color: var(--sp-danger); font-size: 1.15rem; margin: 0;">Redefinir Dados</h3>
+        <button class="sp-modal-close" id="closeResetConfirmBtn">
+          <svg class="icon-svg"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--sp-subtext); margin-bottom: 20px; line-height: 1.5;">
+        Tem certeza que deseja apagar todos os itens da sua lista de compras, despensa e historico de conversa da IA? Esta acao nao podera ser desfeita.
+      </p>
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button class="sp-pill-btn" id="cancelResetBtn">Cancelar</button>
+        <button class="sp-btn-primary" id="confirmResetBtn" style="background-color: var(--sp-danger); color: #fff;">
+          Confirmar e Limpar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="products-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#0e0e0e"/>
+    </linearGradient>
+
+    <!-- Accent Green Gradient (Spotify) -->
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1ed760"/>
+      <stop offset="100%" stop-color="#15a044"/>
+    </linearGradient>
+
+    <!-- Subtle Ambient Glow -->
+    <radialGradient id="ambientGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1ed760" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#1ed760" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Squircle Base with Border -->
+  <rect x="8" y="8" width="112" height="112" rx="30" fill="url(#bgGrad)" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1.5"/>
+
+  <!-- Ambient Glow Center -->
+  <circle cx="64" cy="64" r="42" fill="url(#ambientGlow)"/>
+
+  <!-- Shopping Bag Handle -->
+  <path d="M48 50 C48 38 55 32 64 32 C73 32 80 38 80 50" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Shopping Bag Body -->
+  <path d="M38 52 L90 52 L85 96 C85 99 82 102 78 102 L50 102 C46 102 43 99 43 96 Z" fill="url(#greenGrad)"/>
+
+  <!-- Checked Item Inside Bag -->
+  <path d="M54 74 L61 81 L75 67" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
