@@ -79,7 +79,7 @@ def build():
         ("var(--radius-md)", "12px"),
         ("var(--radius-sm)", "8px"),
         ("var(--radius-xs)", "4px"),
-        ("var(--font-family)", "system-ui,sans-serif"),
+        ("var(--font-family)", "system-ui"),
         ("var(--transition)", "all .2s ease")
     ]
     opt_css = raw_css
@@ -252,7 +252,8 @@ function initSuperProductivityHooks() {
 
     p_js = subprocess.run([
         "npx", "terser",
-        "--compress", "passes=5,unsafe_arrows=true,unsafe_methods=true,dead_code=true,drop_console=true,drop_debugger=true,pure_getters=true,unsafe=true,unsafe_proto=true,unsafe_math=true,booleans_as_integers=true",
+        "--ecma", "2020",
+        "--compress", "ecma=2020,passes=5,unsafe_arrows=true,unsafe_methods=true,dead_code=true,drop_console=true,drop_debugger=true,pure_getters=true,unsafe=true,unsafe_proto=true,unsafe_math=true,booleans_as_integers=true",
         "--mangle", "toplevel=true"
     ], input=combined_js.encode("utf-8"), stdout=subprocess.PIPE, check=True)
     min_js = p_js.stdout.decode("utf-8")
@@ -278,6 +279,7 @@ function initSuperProductivityHooks() {
     clean_html = re.sub(r'<link rel="stylesheet".*?>', '', raw_html)
     clean_html = re.sub(r'<link rel="preconnect".*?>', '', clean_html)
     clean_html = re.sub(r'<link href="https://fonts\.googleapis\.com.*?>', '', clean_html)
+    clean_html = re.sub(r'<meta name="description".*?>', '', clean_html)
     clean_html = re.sub(r'<script.*?</script>', '', clean_html, flags=re.DOTALL)
     clean_html = re.sub(r'<!--.*?-->', '', clean_html, flags=re.DOTALL)
     clean_html = re.sub(r'>\s+<', '><', clean_html)

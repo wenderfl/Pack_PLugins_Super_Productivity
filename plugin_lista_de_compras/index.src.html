@@ -2369,6 +2369,15 @@ body.player-hidden {
           <button class="sp-pill-btn" id="btnSaveIconBase" style="align-self: flex-end;">Salvar</button>
         </div>
 
+        <div class="sp-setting-row">
+          <div style="flex: 1; margin-right: 12px;">
+            <div class="sp-setting-title">Servidor OmniRoute (IA)</div>
+            <div class="sp-setting-sub">URL do OmniRoute (ex: http://localhost:20128 ou IP do PC na rede Wi-Fi)</div>
+            <input type="text" id="settingOmniRouteUrlInput" class="sp-search-input" style="width: 100%; margin-top: 8px; font-size: 0.82rem; padding: 6px 12px;" placeholder="http://localhost:20128">
+          </div>
+          <button class="sp-pill-btn" id="btnSaveOmniRouteUrl" style="align-self: flex-end;">Salvar</button>
+        </div>
+
         <div class="sp-setting-row" style="border-bottom: none;">
           <div>
             <div class="sp-setting-title" style="color: var(--sp-danger);">Redefinir Dados</div>
@@ -2556,10 +2565,10 @@ const state = {
   iconBaseUrl: localStorage.getItem('listou_spotify_icon_base') || 'http://localhost:4321/icones',
   aiChatHistory: [],
   aiConfig: {
-    baseUrl: 'http://localhost:20128',
-    messagesEndpoint: 'http://localhost:20128/v1/messages',
+    baseUrl: localStorage.getItem('sp_omniroute_base_url') || 'http://localhost:20128',
+    messagesEndpoint: (localStorage.getItem('sp_omniroute_base_url') || 'http://localhost:20128').replace(/\/+$/, '') + '/v1/messages',
     apiKey: localStorage.getItem('sp_omniroute_api_key') || 'sk-7d670ad9c936d6ae-b3bc5d-826c9227',
-    model: 'google'
+    model: localStorage.getItem('sp_omniroute_model') || 'combo/google'
   }
 };
 
@@ -2621,32 +2630,10 @@ function getIconUrl(item) {
   return cleanBase + '/' + encodeURIComponent(cleanFilename);
 }
 
-const _CAT_COLORS = {
-  'Frutas': '#1ed760',
-  'Verduras e Legumes': '#10b981',
-  'Carnes e Proteínas': '#ef4444',
-  'Laticínios': '#3b82f6',
-  'Padaria': '#f59e0b',
-  'Confeitaria': '#ec4899',
-  'Bebidas Alcoólicas': '#8b5cf6',
-  'Bebidas sem Álcool': '#06b6d4',
-  'Biscoitos e Snacks': '#d97706',
-  'Doces e Guloseimas': '#f43f5e',
-  'Sorvetes e Sobremesas': '#a855f7',
-  'Enlatados': '#64748b',
-  'Mercearia': '#eab308',
-  'Temperos e Condimentos': '#ea580c',
-  'Congelados': '#0284c7',
-  'Limpeza': '#14b8a6',
-  'Ultilidades Domésticas': '#6366f1',
-  'Higiene Pessoal e Cosméticos': '#f472b6',
-  'Farmácia': '#dc2626',
-  'Infantil': '#fbbf24',
-  'Pet': '#f97316'
-};
-
 function getCatColor(cat) {
-  return _CAT_COLORS[cat] || '#1ed760';
+  if (!cat) return '#1ed760';
+  const pal = ['#16a34a', '#ef4444', '#f97316', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#eab308', '#14b8a6', '#6366f1', '#dc2626'];
+  return pal[(cat.charCodeAt(0) + cat.charCodeAt(cat.length - 1)) % pal.length];
 }
 
 function getCatSvg(cat) {
@@ -3749,6 +3736,19 @@ function setupEventListeners() {
     });
   }
 
+  const btnSaveOmniRouteUrl = document.getElementById('btnSaveOmniRouteUrl');
+  const settingOmniRouteUrlInput = document.getElementById('settingOmniRouteUrlInput');
+  if (btnSaveOmniRouteUrl && settingOmniRouteUrlInput) {
+    settingOmniRouteUrlInput.value = state.aiConfig.baseUrl || '';
+    btnSaveOmniRouteUrl.addEventListener('click', () => {
+      const val = settingOmniRouteUrlInput.value.trim() || 'http://localhost:20128';
+      state.aiConfig.baseUrl = val;
+      state.aiConfig.messagesEndpoint = val.replace(/\/+$/, '') + '/v1/messages';
+      localStorage.setItem('sp_omniroute_base_url', val);
+      showToast('Servidor OmniRoute salvo');
+    });
+  }
+
   const closeResetConfirmBtn = document.getElementById('closeResetConfirmBtn');
   if (closeResetConfirmBtn) closeResetConfirmBtn.addEventListener('click', closeResetConfirmModal);
 
@@ -3985,6 +3985,8 @@ function openSettingsModal() {
   if (modal) {
     const input = document.getElementById('settingIconBaseInput');
     if (input) input.value = state.iconBaseUrl || '';
+    const omniInput = document.getElementById('settingOmniRouteUrlInput');
+    if (omniInput) omniInput.value = state.aiConfig.baseUrl || '';
     modal.classList.add('open');
   }
 }
@@ -4078,7 +4080,8 @@ async function sendAiChatMessage(userText) {
   } catch (err) {
     console.warn('Erro ao conectar com OmniRoute AI, usando fallback local:', err);
     const fallbackText = generateAiLocalFallback(userText);
-    botMsg.innerHTML = `<div class="sp-msg-bubble">${fallbackText}</div>`;
+    const offlineNote = `<div style="font-size:0.75rem; color:var(--sp-subtext); margin-top:4px; opacity:0.8;">(Modo offline local: OmniRoute indisponivel)</div>`;
+    botMsg.innerHTML = `<div class="sp-msg-bubble">${fallbackText}${offlineNote}</div>`;
     state.aiChatHistory.push({ role: 'assistant', content: fallbackText });
     saveAiChatHistory();
   }
@@ -4109,16 +4112,8 @@ function formatAiResponse(text) {
     .replace(/\n/g, '<br>');
 }
 
-// ============================================================================
 // Ferramentas de IA: Leitura e Modificação de Lista, Despensa e Catálogo
 // ============================================================================
-const AI_TOOLS_DEFINITIONS = [
-  { name: 'read_current_state', description: 'Le lista e despensa', input_schema: { type: 'object' } },
-  { name: 'search_catalog', description: 'Busca no catalogo', input_schema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] } },
-  { name: 'modify_shopping_list', description: 'Modifica lista', input_schema: { type: 'object', properties: { action: { type: 'string' }, product_name: { type: 'string' }, quantity: { type: 'number' } }, required: ['action', 'product_name'] } },
-  { name: 'modify_pantry', description: 'Modifica despensa', input_schema: { type: 'object', properties: { action: { type: 'string' }, product_name: { type: 'string' }, quantity: { type: 'number' }, status: { type: 'string' } }, required: ['action', 'product_name'] } },
-  { name: 'modify_catalog_item', description: 'Modifica catalogo', input_schema: { type: 'object', properties: { product_name: { type: 'string' }, new_unit: { type: 'string' } }, required: ['product_name'] } }
-];
 
 function findProductInCatalog(name) {
   const norm = normalizeStr(name || '');
@@ -4338,100 +4333,112 @@ function executeAiTool(name, input) {
 }
 
 async function callOmniRouteAI() {
-  const apiKey = state.aiConfig.apiKey;
-  const endpoint = state.aiConfig.messagesEndpoint;
-  const model = state.aiConfig.model;
+  const baseUrl = (state.aiConfig && state.aiConfig.baseUrl) || localStorage.getItem('sp_omniroute_base_url') || 'http://localhost:20128';
+  const endpoint = baseUrl.replace(/\/+$/, '') + '/v1/messages';
+  const apiKey = (state.aiConfig && state.aiConfig.apiKey) || localStorage.getItem('sp_omniroute_api_key') || 'sk-7d670ad9c936d6ae-b3bc5d-826c9227';
+  const model = (state.aiConfig && state.aiConfig.model) || localStorage.getItem('sp_omniroute_model') || 'combo/google';
 
   const shoppingSummary = state.shoppingList.length > 0
-    ? state.shoppingList.map(i => `${i.nome} (qtd: ${i.quantidade} ${i.unidade}, preco: R$ ${(i.preco || 0).toFixed(2)}, ${i.comprado ? 'comprado' : 'pendente'})`).join('; ')
-    : 'Lista atualmente vazia.';
+    ? state.shoppingList.map(i => `${i.nome} (${i.quantidade} ${i.unidade}, ${i.comprado ? 'comprado' : 'pendente'})`).join('; ')
+    : 'Lista vazia.';
 
   const pantrySummary = state.pantryList.length > 0
-    ? state.pantryList.map(i => `${i.nome} (qtd: ${i.quantidade} ${i.unidade}, status: ${i.status})`).join('; ')
-    : 'Despensa atualmente vazia.';
+    ? state.pantryList.map(i => `${i.nome} (${i.quantidade} ${i.unidade}, status: ${i.status})`).join('; ')
+    : 'Despensa vazia.';
 
-  const systemPrompt = `Assistente IA do Listou.
-Capacidade: LER E MODIFICAR Lista, Despensa e Catalogo usando as ferramentas disponiveis.
-Estado: Lista: ${shoppingSummary} | Despensa: ${pantrySummary}.
-Regras: NUNCA use emojis. Responda em portugues de forma concisa.`;
+  const systemPrompt = `Assistente IA do Listou. NUNCA use emojis. Portugues conciso.
+Lista: ${shoppingSummary} | Despensa: ${pantrySummary}.
+Para adicionar, remover ou marcar itens, responda amigavelmente e termine com:
+\`\`\`action
+{"action":"add_shopping"|"remove_shopping"|"buy_shopping"|"add_pantry","item":"produto","quantity":1}
+\`\`\``;
 
-  let currentMessages = state.aiChatHistory.map(m => ({
+  const currentMessages = state.aiChatHistory.map(m => ({
     role: m.role,
     content: m.content
   }));
 
-  // Suporte a multi-turn tool calling (até 4 iterações)
-  for (let iter = 0; iter < 4; iter++) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 1800);
-    let response;
-    try {
-      response = await fetch(endpoint, {
-        signal: controller.signal,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: model,
-          max_tokens: 1000,
-          system: systemPrompt,
-          tools: AI_TOOLS_DEFINITIONS,
-          messages: currentMessages
-        })
-      });
-    } finally {
-      clearTimeout(timer);
-    }
-
-    if (!response.ok) {
-      throw new Error(`OmniRoute error status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    // Verifica se houve chamadas de ferramentas (tool_use)
-    const toolUseBlocks = (data.content || []).filter(c => c.type === 'tool_use');
-    const textBlocks = (data.content || []).filter(c => c.type === 'text' && c.text && c.text !== '(empty response)');
-
-    if (toolUseBlocks.length > 0) {
-      currentMessages.push({
-        role: 'assistant',
-        content: data.content
-      });
-
-      const toolResults = [];
-      for (const toolCall of toolUseBlocks) {
-        const result = executeAiTool(toolCall.name, toolCall.input || {});
-        toolResults.push({
-          type: 'tool_result',
-          tool_use_id: toolCall.id,
-          content: JSON.stringify(result)
-        });
-      }
-
-      currentMessages.push({
-        role: 'user',
-        content: toolResults
-      });
-      continue;
-    }
-
-    if (textBlocks.length > 0) {
-      return textBlocks.map(t => t.text).join('\n');
-    }
-
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      return data.choices[0].message.content || 'Acao concluida com sucesso.';
-    }
-
-    return 'Acao executada com sucesso.';
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12000);
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      signal: controller.signal,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: model,
+        max_tokens: 600,
+        system: systemPrompt,
+        messages: currentMessages
+      })
+    });
+  } finally {
+    clearTimeout(timer);
   }
 
-  return 'Acao concluida na lista e despensa.';
+  if (!response.ok) {
+    throw new Error(`OmniRoute status ${response.status}`);
+  }
+
+  const data = await response.json();
+  let rawText = '';
+  if (data.content && Array.isArray(data.content)) {
+    rawText = data.content.filter(c => c.type === 'text').map(c => c.text).join('\n');
+  } else if (data.choices && data.choices[0] && data.choices[0].message) {
+    rawText = data.choices[0].message.content || '';
+  }
+
+  if (!rawText) {
+    throw new Error('OmniRoute resposta vazia');
+  }
+
+  // Processa bloco de acao estruturada se retornado pela IA
+  const actionMatch = rawText.match(/```(?:action|json)?\s*([\s\S]*?)\s*```/);
+  if (actionMatch) {
+    try {
+      const actionData = JSON.parse(actionMatch[1]);
+      if (actionData.action === 'add_shopping' && actionData.item) {
+        executeAiTool('modify_shopping_list', {
+          action: 'add',
+          product_name: actionData.item,
+          quantity: actionData.quantity || 1,
+          unit: actionData.unit
+        });
+      } else if (actionData.action === 'remove_shopping' && actionData.item) {
+        executeAiTool('modify_shopping_list', {
+          action: 'remove',
+          product_name: actionData.item
+        });
+      } else if (actionData.action === 'buy_shopping' && actionData.item) {
+        const prod = findProductInCatalog(actionData.item);
+        const target = prod ? state.shoppingList.find(i => i.nome === prod.nome) : state.shoppingList.find(i => normalizeStr(i.nome).includes(normalizeStr(actionData.item)));
+        if (target) {
+          target.comprado = true;
+          saveShoppingList();
+          renderShoppingList();
+          renderMarketMode();
+          playChime(true);
+        }
+      } else if (actionData.action === 'add_pantry' && actionData.item) {
+        executeAiTool('modify_pantry', {
+          action: 'add',
+          product_name: actionData.item,
+          quantity: actionData.quantity || 1
+        });
+      }
+    } catch (e) {
+      console.warn('Erro ao processar bloco action da IA:', e);
+    }
+  }
+
+  const cleanText = rawText.replace(/```(?:action|json)?\s*[\s\S]*?\s*```/g, '').trim();
+  return cleanText || rawText;
 }
 
 function generateAiLocalFallback(prompt) {
