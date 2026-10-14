@@ -471,32 +471,41 @@ input[type="number"] {
 .sp-check-btn {
   width: 28px;
   height: 28px;
+  min-width: 28px;
+  min-height: 28px;
   border-radius: 50%;
   border: 2px solid var(--sp-subtext);
   background: transparent;
-  display: flex;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: transparent;
   transition: var(--transition);
 }
 
 .sp-check-btn:hover {
   border-color: var(--sp-green);
-  transform: scale(1.1);
-}
-
-.sp-item-row.completed .sp-check-btn {
-  background-color: var(--sp-green);
-  border-color: var(--sp-green);
-  color: var(--sp-black);
+  transform: scale(1.08);
 }
 
 .sp-check-btn .icon-svg {
   width: 14px;
   height: 14px;
   fill: var(--sp-black);
+  display: none;
+}
+
+.sp-item-row.completed .sp-check-btn {
+  background-color: var(--sp-green);
+  border-color: var(--sp-green);
+}
+
+.sp-item-row.completed .sp-check-btn .icon-svg {
+  display: block;
 }
 
 .sp-item-art {
@@ -1641,9 +1650,14 @@ body.player-hidden {
     border-radius: 10px;
   }
   .sp-check-btn {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0;
+    margin: 0;
     flex-shrink: 0;
+    aspect-ratio: 1 / 1;
   }
   .sp-item-art {
     width: 40px;

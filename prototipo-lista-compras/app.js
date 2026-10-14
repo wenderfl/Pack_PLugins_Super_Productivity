@@ -2004,19 +2004,19 @@ function generateAiLocalFallback(prompt) {
   if (p.includes('receita') || p.includes('cozinhar') || p.includes('comida')) {
     if (fullPantry.length > 0) {
       const items = fullPantry.slice(0, 3).map(i => i.nome).join(', ');
-      return `Com base no que voce tem em estoque (${items}), sugiro preparar um prato rapido aproveitando esses ingredientes. Deseja que eu adicione temperos ou complementos a sua lista de compras?`;
+      return `Com base no estoque (${items}), sugiro preparar um prato rapido. Deseja adicionar complementos a lista?`;
     }
-    return `Para sugerir uma receita sob medida, cadastre os itens que voce costuma ter em casa na aba Despensa. Enquanto isso, uma massa pratica com legumes salteados sao otimas opcoes!`;
+    return 'Cadastre itens na Despensa para sugestoes de receitas!';
   }
 
   if (p.includes('saudavel') || p.includes('semana') || p.includes('dieta')) {
-    return `Para uma semana equilibrada, recomendo incluir: <strong>Frutas frescas (Maca, Banana, Abacate)</strong>, <strong>Legumes e Verduras (Brocolis, Cenoura, Espinafre)</strong>, e <strong>Proteinas leves</strong>. Voce pode busca-los diretamente no Catalogo de 521 itens!`;
+    return 'Recomendo incluir frutas frescas, legumes e proteinas leves do catalogo!';
   }
 
   if (p.includes('total') || p.includes('gasto') || p.includes('preco')) {
     const total = state.shoppingList.reduce((acc, i) => acc + ((parseFloat(i.preco) || 0) * (i.quantidade || 1)), 0);
-    return `O total estimado da sua lista atual e de <strong>${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong> para ${state.shoppingList.length} itens.`;
+    return `O total estimado da lista e de <strong>${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong> para ${state.shoppingList.length} itens.`;
   }
 
-  return `Entendi sua solicitacao! Posso te ajudar a organizar seu estoque da despensa, prever compras da semana ou sugerir produtos do catalogo oficial. Se precisar adicionar algum item especifico, basta me avisar ou navegar pelo Catalogo.`;
+  return 'Posso ajudar a organizar seu estoque, planejar compras ou sugerir itens do catalogo!';
 }
