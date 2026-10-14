@@ -1588,80 +1588,62 @@ function formatAiResponse(text) {
 const AI_TOOLS_DEFINITIONS = [
   {
     name: 'read_current_state',
-    description: 'Le os dados completos e detalhados da lista de compras atual, despensa e itens em destaque do catalogo.',
+    description: 'Le lista de compras e despensa.',
     input_schema: {
       type: 'object',
-      properties: {
-        filter: { 
-          type: 'string', 
-          enum: ['all', 'shopping_list', 'pantry', 'catalog_summary'],
-          description: 'Qual parte do sistema inspecionar' 
-        }
-      }
+      properties: { filter: { type: 'string' } }
     }
   },
   {
     name: 'search_catalog',
-    description: 'Busca produtos oficiais no catalogo de 521 itens por nome ou categoria.',
+    description: 'Busca produtos no catalogo.',
     input_schema: {
       type: 'object',
       properties: {
-        query: { type: 'string', description: 'Termo de pesquisa (ex: Cafe, Leite, Arroz)' },
-        category: { type: 'string', description: 'Categoria opcional' }
+        query: { type: 'string' },
+        category: { type: 'string' }
       },
       required: ['query']
     }
   },
   {
     name: 'modify_shopping_list',
-    description: 'Adiciona, atualiza campos (preco, quantidade, comprado) ou remove itens da lista de compras.',
+    description: 'Modifica lista de compras.',
     input_schema: {
       type: 'object',
       properties: {
-        action: { 
-          type: 'string', 
-          enum: ['add', 'update', 'remove', 'mark_purchased'],
-          description: 'Acao a ser realizada na lista de compras' 
-        },
-        product_name: { type: 'string', description: 'Nome do produto (ex: Banana, Arroz)' },
-        quantity: { type: 'number', description: 'Quantidade (ex: 2)' },
-        price: { type: 'number', description: 'Preco unitario em Reais (ex: 7.50)' },
-        unit: { type: 'string', description: 'Unidade de medida opcional (ex: un, kg, pct)' },
-        purchased: { type: 'boolean', description: 'Se o item foi comprado ou nao' }
+        action: { type: 'string', enum: ['add', 'update', 'remove', 'mark_purchased'] },
+        product_name: { type: 'string' },
+        quantity: { type: 'number' },
+        price: { type: 'number' },
+        unit: { type: 'string' },
+        purchased: { type: 'boolean' }
       },
       required: ['action', 'product_name']
     }
   },
   {
     name: 'modify_pantry',
-    description: 'Adiciona, atualiza quantidade, altera status de estoque ou remove itens da despensa doméstica.',
+    description: 'Modifica itens da despensa.',
     input_schema: {
       type: 'object',
       properties: {
-        action: { 
-          type: 'string', 
-          enum: ['add', 'update_quantity', 'update_status', 'remove', 'move_from_shopping'],
-          description: 'Acao a ser realizada na despensa' 
-        },
-        product_name: { type: 'string', description: 'Nome do produto na despensa' },
-        quantity: { type: 'number', description: 'Quantidade no estoque doméstico' },
-        status: { 
-          type: 'string', 
-          enum: ['full', 'low', 'empty'],
-          description: 'Status do estoque (full: Em Estoque, low: Acabando, empty: Esgotado)' 
-        }
+        action: { type: 'string', enum: ['add', 'update_quantity', 'update_status', 'remove', 'move_from_shopping'] },
+        product_name: { type: 'string' },
+        quantity: { type: 'number' },
+        status: { type: 'string', enum: ['full', 'low', 'empty'] }
       },
       required: ['action', 'product_name']
     }
   },
   {
     name: 'modify_catalog_item',
-    description: 'Modifica dados ou campos de um produto no catalogo (ex: unidade de medida padrao ou nome).',
+    description: 'Modifica unidade de produto no catalogo.',
     input_schema: {
       type: 'object',
       properties: {
-        product_name: { type: 'string', description: 'Nome atual do produto no catalogo' },
-        new_unit: { type: 'string', description: 'Nova unidade padrao (ex: kg, un, l)' }
+        product_name: { type: 'string' },
+        new_unit: { type: 'string' }
       },
       required: ['product_name']
     }

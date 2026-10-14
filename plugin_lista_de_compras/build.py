@@ -69,10 +69,13 @@ def build():
         ("var(--sp-subtext)", "#b3b3b3"),
         ("var(--sp-muted)", "#727272"),
         ("var(--sp-danger)", "#e22134"),
+        ("var(--sp-warning)", "#ffa42b"),
+        ("var(--sp-blue)", "#2e77d0"),
         ("var(--sp-border)", "rgba(255,255,255,0.08)"),
         ("var(--sp-border-hover)", "rgba(255,255,255,0.15)"),
         ("var(--sp-highlight)", "#2a2a2a"),
         ("var(--radius-full)", "999px"),
+        ("var(--radius-md)", "12px"),
         ("var(--radius-sm)", "8px"),
         ("var(--radius-xs)", "4px"),
         ("var(--font-family)", "system-ui,sans-serif"),
@@ -271,6 +274,8 @@ function initSuperProductivityHooks() {
     print(f"index.src.html gravado com sucesso ({len(src_html.encode('utf-8'))} bytes)")
 
     clean_html = re.sub(r'<link rel="stylesheet".*?>', '', raw_html)
+    clean_html = re.sub(r'<link rel="preconnect".*?>', '', clean_html)
+    clean_html = re.sub(r'<link href="https://fonts\.googleapis\.com.*?>', '', clean_html)
     clean_html = re.sub(r'<script.*?</script>', '', clean_html, flags=re.DOTALL)
     clean_html = re.sub(r'<!--.*?-->', '', clean_html, flags=re.DOTALL)
     clean_html = re.sub(r'>\s+<', '><', clean_html)
@@ -283,7 +288,8 @@ function initSuperProductivityHooks() {
             "--remove-comments",
             "--remove-redundant-attributes",
             "--remove-empty-attributes",
-            "--remove-attribute-quotes"
+            "--remove-attribute-quotes",
+            "--collapse-boolean-attributes"
         ], input=clean_html.encode("utf-8"), stdout=subprocess.PIPE, check=True)
         clean_html = p_htm.stdout.decode("utf-8")
     except Exception:
