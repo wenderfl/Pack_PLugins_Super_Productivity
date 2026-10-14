@@ -309,5 +309,26 @@ function initSuperProductivityHooks() {
     else:
         raise ValueError(f"Tamanho {final_bytes} excedeu o limite!")
 
+    # 5. Gera automaticamente o pacote zip único oficial
+    zip_dest = os.path.join(os.path.dirname(DIR), 'plugin_lista_de_compras.zip')
+    print(f"Gerando pacote zip único oficial: {zip_dest}...")
+    subprocess.run([
+        'zip', '-q', '-9', '-r', zip_dest,
+        'manifest.json', 'index.html', 'plugin.js', 'icon.svg', 'icones/'
+    ], cwd=DIR, check=True)
+    zip_size_mb = os.path.getsize(zip_dest) / (1024 * 1024)
+    print(f"Pacote único gerado com sucesso: {zip_dest} ({zip_size_mb:.2f} MB)")
+
 if __name__ == '__main__':
+    manifest_path = os.path.join(DIR, 'manifest.json')
+    if '--bump' in sys.argv:
+        with open(manifest_path, 'r', encoding='utf-8') as f:
+            manifest = json.load(f)
+        parts = manifest.get('version', '1.0.0').split('.')
+        parts[-1] = str(int(parts[-1]) + 1)
+        manifest['version'] = '.'.join(parts)
+        with open(manifest_path, 'w', encoding='utf-8') as f:
+            json.dump(manifest, f, indent=2, ensure_ascii=False)
+            f.write('\n')
+        print(f"Versao incrementada no manifest.json para: {manifest['version']}")
     build()
