@@ -1835,6 +1835,70 @@ body.player-hidden {
     padding: 16px 14px;
     max-height: 90vh;
   }
+  /* Despensa em mobile */
+  .sp-pantry-card {
+    padding: 10px 8px;
+    gap: 10px;
+  }
+  .sp-pantry-thumb {
+    width: 44px;
+    height: 44px;
+  }
+  .sp-pantry-name {
+    font-size: 0.88rem;
+  }
+  .sp-pantry-meta {
+    font-size: 0.72rem;
+  }
+  .sp-status-badge {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+  }
+  /* Modo Mercado em mobile */
+  .sp-market-banner {
+    padding: 14px 12px;
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+  .sp-market-title h2 {
+    font-size: 1.15rem;
+  }
+  .sp-market-title p {
+    font-size: 0.78rem;
+  }
+  .sp-market-item {
+    padding: 10px 10px;
+    gap: 10px;
+  }
+  .sp-market-art {
+    width: 44px;
+    height: 44px;
+  }
+  .sp-market-checkbox {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    margin: 0;
+  }
+  /* Toasts flutuantes centralizados */
+  .sp-toast-container {
+    bottom: 80px;
+    left: 16px;
+    right: 16px;
+    align-items: center;
+  }
+  .sp-toast {
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    border-radius: var(--radius-full);
+  }
+  /* Sugestoes do chat IA com scroll horizontal suave */
+  .sp-chip-prompt {
+    flex-shrink: 0;
+  }
 }
 
 .sp-fallback-badge {

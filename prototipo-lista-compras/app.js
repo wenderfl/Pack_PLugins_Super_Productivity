@@ -1661,27 +1661,11 @@ function executeAiTool(name, input) {
   console.log(`[AI TOOL] Executando ferramenta ${name}:`, input);
 
   if (name === 'read_current_state') {
-    const res = {
-      shopping_list: state.shoppingList.map(i => ({
-        id: i.id,
-        nome: i.nome,
-        categoria: i.categoria,
-        quantidade: i.quantidade,
-        unidade: i.unidade,
-        preco: i.preco || 0,
-        comprado: i.comprado
-      })),
-      pantry: state.pantryList.map(i => ({
-        id: i.id,
-        nome: i.nome,
-        categoria: i.categoria,
-        quantidade: i.quantidade,
-        unidade: i.unidade,
-        status: i.status
-      })),
+    return {
+      shopping_list: state.shoppingList,
+      pantry: state.pantryList,
       total_catalog_products: state.products.length
     };
-    return res;
   }
 
   if (name === 'search_catalog') {
@@ -1897,22 +1881,10 @@ async function callOmniRouteAI() {
     ? state.pantryList.map(i => `${i.nome} (qtd: ${i.quantidade} ${i.unidade}, status: ${i.status})`).join('; ')
     : 'Despensa atualmente vazia.';
 
-  const systemPrompt = `Voce e o assistente de inteligencia artificial do aplicativo de compras e despensa "Listou".
-Voce tem total capacidade e autorizacao para LER E MODIFICAR:
-- Minha Lista de Compras (adicionar produtos, alterar preco, quantidade, marcar comprado, remover).
-- Minha Despensa (adicionar estoque, alterar quantidades, mudar status para full/low/empty, transferir da lista).
-- Catalogo oficial de 521 produtos (consultar itens, precos ou modificar unidades).
-
-Sempre que o usuario pedir para adicionar, alterar preco, mudar quantidade, marcar ou guardar algo, USE AS FERRAMENTAS DISPONIVEIS (modify_shopping_list, modify_pantry, search_catalog, read_current_state, etc.).
-Apos executar as ferramentas, confirme claramente para o usuario em uma resposta amigavel.
-
-Estado atual:
-- Lista de compras: ${shoppingSummary}
-- Despensa: ${pantrySummary}
-
-Regras:
-- NUNCA use emojis sob nenhuma hipotese.
-- Responda em portugues do Brasil de forma clara e objetiva.`;
+  const systemPrompt = `Assistente IA do Listou.
+Capacidade: LER E MODIFICAR Lista, Despensa e Catalogo usando as ferramentas disponiveis.
+Estado: Lista: ${shoppingSummary} | Despensa: ${pantrySummary}.
+Regras: NUNCA use emojis. Responda em portugues de forma concisa.`;
 
   let currentMessages = state.aiChatHistory.map(m => ({
     role: m.role,
