@@ -78,10 +78,9 @@ function getIconUrl(item) {
   } else {
     raw = item.arquivo || item.icone || (item.nome ? item.nome + '.webp' : '');
   }
-  if (!raw) return '';
-  
-  const cleanFilename = String(raw).replace(/^.*\/icones\//, '').replace(/^icones\//, '').trim();
-  return cleanBase + '/' + encodeURIComponent(decodeURIComponent(cleanFilename));
+  let cleanFilename = String(raw).replace(/^.*\/icones\//, '').replace(/^icones\//, '').trim();
+  try { cleanFilename = decodeURIComponent(cleanFilename); } catch (e) {}
+  return cleanBase + '/' + encodeURIComponent(cleanFilename);
 }
 
 const _CAT_COLORS = {
@@ -164,17 +163,23 @@ function handleIconError(img, cat) {
 }
 
 // Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-  loadSavedShoppingList();
-  loadSavedPantryList();
-  loadSavedAiChatHistory();
-  renderCategoryChips();
-  renderCatalog();
-  renderShoppingList();
-  renderPantryList();
-  setupEventListeners();
-  updateMetrics();
-});
+function initApp() {
+  try { loadSavedShoppingList(); } catch (e) {}
+  try { loadSavedPantryList(); } catch (e) {}
+  try { loadSavedAiChatHistory(); } catch (e) {}
+  try { renderCategoryChips(); } catch (e) {}
+  try { renderCatalog(); } catch (e) {}
+  try { renderShoppingList(); } catch (e) {}
+  try { renderPantryList(); } catch (e) {}
+  try { setupEventListeners(); } catch (e) {}
+  try { updateMetrics(); } catch (e) {}
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // ============================================================================
 // Persistência: Lista de Compras & Despensa
