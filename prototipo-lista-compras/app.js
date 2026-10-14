@@ -406,6 +406,7 @@ function createShoppingItemRowHTML(item) {
           type="number" 
           step="0.01" 
           min="0" 
+          inputmode="decimal"
           class="sp-price-input" 
           value="${item.preco ? Number(item.preco).toFixed(2) : ''}" 
           placeholder="0,00"
@@ -1996,27 +1997,27 @@ function generateAiLocalFallback(prompt) {
   if (p.includes('falta') || p.includes('despensa') || p.includes('essencia')) {
     if (lowPantry.length > 0) {
       const names = lowPantry.map(i => `${i.nome} (${i.status === 'empty' ? 'esgotado' : 'acabando'})`).join(', ');
-      return `Identifiquei os seguintes itens precisando de reposicao na sua despensa: <strong>${names}</strong>. Voce pode clicar em 'Repor Itens em Falta' na aba Despensa para transferi-los para sua lista.`;
+      return `Itens precisando de reposicao: <strong>${names}</strong>. Clique em 'Repor' na Despensa para adicionar a lista.`;
     }
-    return `Sua despensa esta bem abastecida no momento! Nenhum item com status de acabando ou esgotado.`;
+    return 'Despensa abastecida! Nenhum item acabando ou esgotado.';
   }
 
   if (p.includes('receita') || p.includes('cozinhar') || p.includes('comida')) {
     if (fullPantry.length > 0) {
       const items = fullPantry.slice(0, 3).map(i => i.nome).join(', ');
-      return `Com base no estoque (${items}), sugiro preparar um prato rapido. Deseja adicionar complementos a lista?`;
+      return `Com base em (${items}), sugiro um prato rapido. Deseja adicionar itens a lista?`;
     }
     return 'Cadastre itens na Despensa para sugestoes de receitas!';
   }
 
   if (p.includes('saudavel') || p.includes('semana') || p.includes('dieta')) {
-    return 'Recomendo incluir frutas frescas, legumes e proteinas leves do catalogo!';
+    return 'Recomendo frutas frescas, legumes e proteinas do catalogo!';
   }
 
   if (p.includes('total') || p.includes('gasto') || p.includes('preco')) {
     const total = state.shoppingList.reduce((acc, i) => acc + ((parseFloat(i.preco) || 0) * (i.quantidade || 1)), 0);
-    return `O total estimado da lista e de <strong>${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong> para ${state.shoppingList.length} itens.`;
+    return `Total estimado: <strong>${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong> (${state.shoppingList.length} itens).`;
   }
 
-  return 'Posso ajudar a organizar seu estoque, planejar compras ou sugerir itens do catalogo!';
+  return 'Posso ajudar a organizar o estoque, sugerir receitas ou itens do catalogo!';
 }

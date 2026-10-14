@@ -71,9 +71,10 @@ def build():
         ("var(--sp-danger)", "#e22134"),
         ("var(--sp-warning)", "#ffa42b"),
         ("var(--sp-blue)", "#2e77d0"),
-        ("var(--sp-border)", "rgba(255,255,255,0.08)"),
-        ("var(--sp-border-hover)", "rgba(255,255,255,0.15)"),
+        ("var(--sp-border)", "rgba(255,255,255,.08)"),
+        ("var(--sp-border-hover)", "rgba(255,255,255,.15)"),
         ("var(--sp-highlight)", "#2a2a2a"),
+        ("var(--sp-green-glow)", "rgba(30,215,96,.3)"),
         ("var(--radius-full)", "999px"),
         ("var(--radius-md)", "12px"),
         ("var(--radius-sm)", "8px"),
@@ -84,6 +85,7 @@ def build():
     opt_css = raw_css
     for o, n in css_subs:
         opt_css = opt_css.replace(o, n)
+    opt_css = re.sub(r':root\s*\{[^}]*\}', '', opt_css)
 
     p_css = subprocess.run(
         ["npx", "clean-css-cli", "-O2"],
